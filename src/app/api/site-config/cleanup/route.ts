@@ -3,6 +3,7 @@ import {
   filterReachablePhotoUrls,
   legacyTheatreGalleryFromProductions,
   normalizeTheatreProductions,
+  readPortraitUrl,
   sanitizeStringArray,
   sanitizeTheatreProductions,
 } from "@/lib/utils";
@@ -14,7 +15,7 @@ function formatSiteConfig(data: Record<string, unknown>) {
   return {
     id: data.id,
     showreel_youtube_id: data.showreel_youtube_id,
-    portrait_url: data.portrait_url ?? "",
+    portrait_url: readPortraitUrl(data),
     bio_short_en: data.bio_short_en,
     bio_short_es: data.bio_short_es,
     bio_short_fr: data.bio_short_fr,

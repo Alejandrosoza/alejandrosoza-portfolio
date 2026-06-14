@@ -105,6 +105,20 @@ export async function filterReachablePhotoUrls(urls: string[]): Promise<string[]
   return checks.filter((url): url is string => url !== null);
 }
 
+/** Read portrait URL from site_config row (supports legacy theatre_photo_url column). */
+export function readPortraitUrl(data: Record<string, unknown> | null | undefined): string {
+  if (!data) return "";
+  const portrait = String(data.portrait_url ?? "").trim();
+  if (portrait) return portrait;
+  return String(data.theatre_photo_url ?? "").trim();
+}
+
+/** DB columns used to persist portrait_url (theatre_photo_url exists before migration 005). */
+export function portraitUrlDbUpdates(portraitUrl: string) {
+  const url = portraitUrl ?? "";
+  return { theatre_photo_url: url, portrait_url: url };
+}
+
 /**
  * Builds an explicit site_config update payload with sanitized gallery arrays.
  */
@@ -115,7 +129,7 @@ export function buildSiteConfigPayload(config: SiteConfig) {
   return {
     id: config.id,
     showreel_youtube_id: config.showreel_youtube_id ?? "",
-    portrait_url: config.portrait_url ?? "",
+    ...portraitUrlDbUpdates(config.portrait_url ?? ""),
     bio_short_en: config.bio_short_en ?? "",
     bio_short_es: config.bio_short_es ?? "",
     bio_short_fr: config.bio_short_fr ?? "",

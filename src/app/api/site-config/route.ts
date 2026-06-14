@@ -2,7 +2,7 @@ import {
   createPublicSupabaseClient,
   requireAuthenticatedSupabaseClient,
 } from "@/lib/supabase-server";
-import { buildSiteConfigPayload, normalizeTheatreProductions, sanitizeStringArray } from "@/lib/utils";
+import { buildSiteConfigPayload, normalizeTheatreProductions, readPortraitUrl, sanitizeStringArray } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
 function formatSiteConfig(data: Record<string, unknown>) {
@@ -11,7 +11,7 @@ function formatSiteConfig(data: Record<string, unknown>) {
   return {
     id: data.id,
     showreel_youtube_id: data.showreel_youtube_id,
-    portrait_url: data.portrait_url ?? "",
+    portrait_url: readPortraitUrl(data),
     bio_short_en: data.bio_short_en,
     bio_short_es: data.bio_short_es,
     bio_short_fr: data.bio_short_fr,
@@ -68,15 +68,38 @@ export async function PUT(request: Request) {
     const payload = buildSiteConfigPayload(body);
     const { id, ...updates } = payload;
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from("site_config")
       .update(updates)
       .eq("id", id)
       .select()
       .single();
-    if (error) throw error;
+
+    // portrait_url column may not exist until migration 005 — retry without it.
+    if (error?.message?.includes("portrait_url")) {
+      const { portrait_url: _removed, ...fallbackUpdates } = updates as Record<string, unknown>;
+      ({ data, error } = await supabase
+        .from("site_config")
+        .update(fallbackUpdates)
+        .eq("id", id)
+        .select()
+        .single());
+    }
+
+    if (error) {
+      console.error("site-config PUT error:", error.message);
+      return NextResponse.json(
+        { error: `Failed to update site config: ${error.message}` },
+        { status: 500 }
+      );
+    }
     return NextResponse.json(formatSiteConfig(data));
-  } catch {
-    return NextResponse.json({ error: "Failed to update site config" }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("site-config PUT error:", message);
+    return NextResponse.json(
+      { error: `Failed to update site config: ${message}` },
+      { status: 500 }
+    );
   }
 }
