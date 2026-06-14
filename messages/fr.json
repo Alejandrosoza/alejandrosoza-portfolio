@@ -35,7 +35,17 @@
     "behindTheScenes": "Dans les coulisses",
     "runtime": "Durée",
     "year": "Année",
-    "backToFilms": "Retour aux films"
+    "month": "Mois",
+    "category": "Catégorie",
+    "filmDetails": "Détails du film",
+    "backToFilms": "← Films",
+    "allFilms": "Tous",
+    "noFilms": "Aucun film pour le moment. Revenez bientôt.",
+    "nextFilm": "Film suivant",
+    "watchFilm": "Regarder le film",
+    "directorStatement": "Note du réalisateur",
+    "behindScenes": "Dans les coulisses",
+    "fromTheSet": "Sur le plateau"
   },
   "common": {
     "loading": "Chargement...",

@@ -35,7 +35,17 @@
     "behindTheScenes": "Behind the Scenes",
     "runtime": "Runtime",
     "year": "Year",
-    "backToFilms": "Back to Films"
+    "month": "Month",
+    "category": "Category",
+    "filmDetails": "Film Details",
+    "backToFilms": "← Films",
+    "allFilms": "All",
+    "noFilms": "No films yet. Check back soon.",
+    "nextFilm": "Next Film",
+    "watchFilm": "Watch Film",
+    "directorStatement": "Director's Statement",
+    "behindScenes": "Behind the Scenes",
+    "fromTheSet": "From the set"
   },
   "common": {
     "loading": "Loading...",

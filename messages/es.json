@@ -35,7 +35,17 @@
     "behindTheScenes": "Detrás de Cámaras",
     "runtime": "Duración",
     "year": "Año",
-    "backToFilms": "Volver a Películas"
+    "month": "Mes",
+    "category": "Categoría",
+    "filmDetails": "Detalles de la Película",
+    "backToFilms": "← Películas",
+    "allFilms": "Todas",
+    "noFilms": "Aún no hay películas. Vuelve pronto.",
+    "nextFilm": "Próxima Película",
+    "watchFilm": "Ver Película",
+    "directorStatement": "Declaración del Director",
+    "behindScenes": "Detrás de Cámaras",
+    "fromTheSet": "Desde el set"
   },
   "common": {
     "loading": "Cargando...",
