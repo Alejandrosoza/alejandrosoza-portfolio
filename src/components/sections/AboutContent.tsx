@@ -86,7 +86,7 @@ function MediaGallery({ photos, youtubeIds, videoLabel, idPrefix, locale }: Medi
           {youtubeIds.map((id) => (
             <div key={id}>
               <YouTubeEmbed youtubeId={id} title={videoLabel} />
-              <p className="mt-2 font-body text-[9px] text-film-cream/30">{videoLabel}</p>
+              <p className="mt-2 font-body text-type-label text-film-cream/30">{videoLabel}</p>
             </div>
           ))}
         </div>
@@ -129,16 +129,16 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:w-[55%]"
           >
-            <p className="font-body text-[9px] uppercase tracking-[0.5em] text-film-cream/30">
+            <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
               {t("director")}
             </p>
             <h1 className="mt-4 font-heading text-[48px] font-light leading-[0.95] text-film-cream md:text-[80px]">
               Alejandro Soza
             </h1>
-            <p className="mt-4 font-body text-[10px] uppercase tracking-[0.4em] text-film-gold">
+            <p className="mt-4 font-body text-type-ui uppercase tracking-[0.4em] text-film-gold">
               Film Director
             </p>
-            <p className="mt-8 max-w-[520px] font-body text-sm leading-[1.9] text-film-cream/60">
+            <p className="mt-8 max-w-[520px] font-body text-type-copy leading-[1.9] text-film-cream/60">
               {bioLong}
             </p>
           </motion.div>
@@ -150,11 +150,11 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
             className="lg:w-[45%]"
           >
             <div className="relative flex aspect-[3/4] items-center justify-center border border-[#2a2a2a] bg-film-gray">
-              <span className="font-body text-[9px] uppercase tracking-widest text-film-cream/20">
+              <span className="font-body text-type-label uppercase tracking-widest text-film-cream/20">
                 {t("portrait")}
               </span>
             </div>
-            <p className="mt-3 font-body text-[9px] tracking-wider text-film-cream/30">
+            <p className="mt-3 font-body text-type-label tracking-wider text-film-cream/30">
               Whitehorse, Yukon, Canada
             </p>
           </motion.div>
@@ -170,13 +170,13 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
           transition={{ duration: 0.8 }}
           className="container-film mx-auto max-w-[680px] py-16 text-center"
         >
-          <p className="font-body text-[9px] uppercase tracking-[0.5em] text-film-cream/30">
+          <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
             {t("artisticVision")}
           </p>
           <p className="mt-6 font-heading text-[22px] font-light italic leading-[1.5] text-film-cream/80 md:text-[32px]">
             {bioShort}
           </p>
-          <p className="mt-6 font-body text-[10px] uppercase tracking-[0.3em] text-film-gold">
+          <p className="mt-6 font-body text-type-ui uppercase tracking-[0.3em] text-film-gold">
             — Alejandro Soza
           </p>
         </motion.div>
@@ -186,14 +186,14 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
       <section className="container-film py-20">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-center">
           <div className="lg:w-[40%]">
-            <p className="font-body text-[9px] uppercase tracking-[0.5em] text-film-cream/30">
+            <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
               {t("onStage")}
             </p>
             <h2 className="mt-4 font-heading text-[48px] font-light text-film-cream">
               {t("theatre")}
             </h2>
             <div className="my-6 h-px w-[60px] bg-film-gold" />
-            <p className="font-body text-sm leading-[1.8] text-film-cream/60">{theatre}</p>
+            <p className="font-body text-type-copy leading-[1.8] text-film-cream/60">{theatre}</p>
           </div>
 
           <div className="lg:w-[60%]">
@@ -208,7 +208,7 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
               </div>
             ) : (
               <div className="relative flex aspect-video items-center justify-center border border-[#2a2a2a] bg-film-gray">
-                <span className="font-body text-[9px] uppercase tracking-widest text-film-cream/20">
+                <span className="font-body text-type-label uppercase tracking-widest text-film-cream/20">
                   {t("theatrePhoto")}
                 </span>
               </div>
@@ -240,7 +240,7 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
               </div>
             ) : (
               <div className="relative flex aspect-[4/3] items-center justify-center border border-[#2a2a2a] bg-film-gray">
-                <span className="font-body text-[9px] uppercase tracking-widest text-film-cream/20">
+                <span className="font-body text-type-label uppercase tracking-widest text-film-cream/20">
                   {t("sportsPhoto")}
                 </span>
               </div>
@@ -248,14 +248,14 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
           </div>
 
           <div className="lg:w-[40%]">
-            <p className="font-body text-[9px] uppercase tracking-[0.5em] text-film-cream/30">
+            <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
               {t("beyondFrame")}
             </p>
             <h2 className="mt-4 font-heading text-[48px] font-light text-film-cream">
               {t("champion")}
             </h2>
             <div className="my-6 h-px w-[60px] bg-film-gold" />
-            <p className="font-body text-sm leading-[1.8] text-film-cream/60">{sports}</p>
+            <p className="font-body text-type-copy leading-[1.8] text-film-cream/60">{sports}</p>
           </div>
         </div>
 
@@ -281,7 +281,7 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
               href={config.cv_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 border border-film-cream/30 px-8 py-3 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
+              className="flex items-center gap-2 border border-film-cream/30 px-8 py-3 font-body text-type-ui uppercase tracking-[0.3em] text-film-cream transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
             >
               <Download size={14} />
               {t("downloadCV")}
@@ -289,7 +289,7 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
           )}
           <Link
             href={`/${locale}/contact`}
-            className="bg-film-gold px-8 py-3 font-body text-[10px] font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia"
+            className="bg-film-gold px-8 py-3 font-body text-type-ui font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia"
           >
             {t("getInTouch")} →
           </Link>

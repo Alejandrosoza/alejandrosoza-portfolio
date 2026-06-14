@@ -45,7 +45,7 @@ export default async function FilmsPage({
   return (
     <div className="min-h-screen">
       <div className="container-film pb-20 pt-40">
-        <p className="font-body text-[9px] uppercase tracking-[0.5em] text-film-cream/30">
+        <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
           Portfolio
         </p>
         <h1 className="mt-4 font-heading text-[48px] font-light leading-tight text-film-cream md:text-[80px]">

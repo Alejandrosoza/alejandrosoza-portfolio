@@ -47,3 +47,17 @@ export async function createAdminSupabaseClient() {
   // Fall back to the caller's authenticated session (admin API routes).
   return createServerSupabaseClient();
 }
+
+export async function requireAuthenticatedSupabaseClient() {
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    return { supabase: null, user: null };
+  }
+
+  return { supabase, user };
+}

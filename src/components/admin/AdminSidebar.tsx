@@ -35,7 +35,7 @@ export default function AdminSidebar() {
     <aside className="fixed left-0 top-0 flex h-screen w-[220px] flex-col border-r border-[#2a2a2a] bg-film-black">
       <div className="px-6 py-6">
         <p className="font-heading text-2xl font-light text-film-gold">AS</p>
-        <p className="mt-1 font-body text-[9px] uppercase tracking-[0.4em] text-film-cream/30">
+        <p className="mt-1 font-body text-type-label uppercase tracking-[0.4em] text-film-cream/30">
           Admin
         </p>
       </div>
@@ -48,7 +48,7 @@ export default function AdminSidebar() {
             <Link
               key={item.href}
               href={`/${locale}${item.href}`}
-              className={`flex items-center gap-3 border-l-2 px-4 py-3 font-body text-[11px] tracking-wider transition-colors duration-300 ${
+              className={`flex items-center gap-3 border-l-2 px-4 py-3 font-body text-type-nav tracking-wider transition-colors duration-300 ${
                 active
                   ? "border-film-gold bg-white/5 text-film-cream"
                   : "border-transparent text-film-cream/50 hover:text-film-cream"
@@ -65,7 +65,7 @@ export default function AdminSidebar() {
         <button
           type="button"
           onClick={handleSignOut}
-          className="flex w-full items-center gap-3 px-4 py-3 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/30 transition-colors duration-300 hover:text-film-cream"
+          className="flex w-full items-center gap-3 px-4 py-3 font-body text-type-ui uppercase tracking-[0.3em] text-film-cream/30 transition-colors duration-300 hover:text-film-cream"
         >
           <LogOut size={14} />
           Sign Out

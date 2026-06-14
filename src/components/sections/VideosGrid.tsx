@@ -91,7 +91,7 @@ function VideoCard({
           <h3 className="mt-1 line-clamp-2 font-heading text-[22px] font-normal text-film-cream">
             {title}
           </h3>
-          <p className="mt-1 font-body text-[9px] text-film-cream/30">{video.year}</p>
+          <p className="mt-1 font-body text-type-label text-film-cream/30">{video.year}</p>
         </div>
       </button>
     </motion.div>

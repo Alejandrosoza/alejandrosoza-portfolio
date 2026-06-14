@@ -24,13 +24,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
           {/* Left */}
           <div className="flex flex-col">
-            <span className="font-heading text-[13px] font-semibold tracking-widest text-film-cream">
+            <span className="font-heading text-type-body font-semibold tracking-widest text-film-cream">
               ALEJANDRO SOZA
             </span>
-            <span className="mt-1 font-body text-[9px] tracking-[0.3em] uppercase text-film-gold">
+            <span className="mt-1 font-body text-type-label tracking-[0.3em] uppercase text-film-gold">
               Film Director
             </span>
-            <span className="mt-2 font-body text-[10px] text-film-cream/40">
+            <span className="mt-2 font-body text-type-ui text-film-cream/40">
               Whitehorse, Yukon, Canada
             </span>
           </div>
@@ -41,7 +41,7 @@ export default function Footer() {
               <Link
                 key={link.href}
                 href={`/${locale}${link.href}`}
-                className="font-body text-[10px] tracking-[0.15em] uppercase text-film-cream/50 transition-colors duration-300 hover:text-film-cream"
+                className="font-body text-type-ui tracking-[0.15em] uppercase text-film-cream/50 transition-colors duration-300 hover:text-film-cream"
               >
                 {link.label[locale]}
               </Link>
@@ -55,13 +55,13 @@ export default function Footer() {
                 <a
                   key={label}
                   href={href}
-                  className="font-body text-[10px] tracking-wider text-film-cream/50 transition-colors duration-300 hover:text-film-gold"
+                  className="font-body text-type-ui tracking-wider text-film-cream/50 transition-colors duration-300 hover:text-film-gold"
                 >
                   {label}
                 </a>
               ))}
             </div>
-            <span className="font-body text-[9px] text-film-cream/30">
+            <span className="font-body text-type-label text-film-cream/30">
               © 2024 Alejandro Soza. All rights reserved.
             </span>
           </div>
@@ -69,11 +69,11 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-8 flex flex-col items-center gap-4 border-t border-[#1a1a1a] pt-4 md:flex-row md:items-center md:justify-between">
-          <span className="font-body text-[9px] text-film-cream/20">
+          <span className="font-body text-type-label text-film-cream/20">
             Built with purpose.
           </span>
 
-          <div className="flex items-center gap-2 font-body text-[10px] tracking-widest">
+          <div className="flex items-center gap-2 font-body text-type-ui tracking-widest">
             {LOCALES.map((loc, i) => (
               <span key={loc} className="flex items-center gap-2">
                 <Link

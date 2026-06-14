@@ -6,9 +6,8 @@ import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import CloudinaryUploadWidget from "@/components/admin/CloudinaryUploadWidget";
 import type { Photo } from "@/lib/types";
 
-const inputClass =
-  "w-full border-b border-[#2a2a2a] bg-transparent py-2 font-body text-[13px] text-film-cream placeholder:text-film-cream/20 transition-colors duration-300 focus:border-film-gold focus:outline-none";
-const labelClass = "font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
+const inputClass = "film-input";
+const labelClass = "film-label";
 
 interface UploadForm {
   title_en: string;
@@ -94,7 +93,7 @@ export default function AdminPhotosPage() {
 
   return (
     <div>
-      <p className="font-body text-xs text-film-cream/60">Photos</p>
+      <p className="font-body text-type-nav text-film-cream/60">Photos</p>
 
       <div className="mt-6 border border-[#2a2a2a] p-6">
         <p className={`${labelClass} mb-4`}>Upload Photo</p>
@@ -107,7 +106,7 @@ export default function AdminPhotosPage() {
             <button
               type="button"
               onClick={() => open()}
-              className="border border-[#2a2a2a] px-4 py-2 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
+              className="border border-[#2a2a2a] px-4 py-2 font-body text-type-ui uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
             >
               Select Image
             </button>
@@ -179,14 +178,14 @@ export default function AdminPhotosPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-film-gold px-8 py-3 font-body text-[10px] font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
+                className="bg-film-gold px-8 py-3 font-body text-type-ui font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
               >
                 {saving ? "SAVING..." : "SAVE PHOTO"}
               </button>
               <button
                 type="button"
                 onClick={() => setPendingUrl(null)}
-                className="font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/30 transition-colors duration-300 hover:text-film-cream"
+                className="font-body text-type-ui uppercase tracking-[0.3em] text-film-cream/30 transition-colors duration-300 hover:text-film-cream"
               >
                 Cancel
               </button>
@@ -197,9 +196,9 @@ export default function AdminPhotosPage() {
 
       <div className="mt-8">
         {loading ? (
-          <p className="font-body text-xs text-film-cream/30">Loading...</p>
+          <p className="font-body text-type-nav text-film-cream/30">Loading...</p>
         ) : photos.length === 0 ? (
-          <p className="font-body text-xs text-film-cream/30">No photos yet. Upload your first photo.</p>
+          <p className="font-body text-type-nav text-film-cream/30">No photos yet. Upload your first photo.</p>
         ) : (
           <div className="grid grid-cols-3 gap-4">
             {photos.map((photo) => (
@@ -211,7 +210,7 @@ export default function AdminPhotosPage() {
                   height={160}
                   className="h-40 w-full object-cover"
                 />
-                <p className="mt-2 truncate font-body text-[11px] text-film-cream">
+                <p className="mt-2 truncate font-body text-type-nav text-film-cream">
                   {photo.title_en || "Untitled"}
                 </p>
                 <div className="mt-3 flex items-center justify-between gap-3">
@@ -221,13 +220,13 @@ export default function AdminPhotosPage() {
                       type="number"
                       value={photo.order_index}
                       onChange={(event) => handleOrderChange(photo, Number(event.target.value))}
-                      className="w-16 border-b border-[#2a2a2a] bg-transparent py-1 font-body text-[12px] text-film-cream focus:border-film-gold focus:outline-none"
+                      className="w-16 border-b border-[#2a2a2a] bg-transparent py-1 font-body text-type-body-sm text-film-cream focus:border-film-gold focus:outline-none"
                     />
                   </div>
                   <button
                     type="button"
                     onClick={() => handleDelete(photo)}
-                    className="font-body text-[10px] uppercase tracking-[0.2em] text-film-cream/50 transition-colors duration-300 hover:text-red-400"
+                    className="font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/50 transition-colors duration-300 hover:text-red-400"
                   >
                     Delete
                   </button>

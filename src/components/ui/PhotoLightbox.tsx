@@ -148,9 +148,9 @@ export default function PhotoLightbox({
           </div>
 
           {(title || caption) && (
-            <div className="mt-4 max-w-2xl text-center font-body text-[11px] text-film-cream/60">
+            <div className="mt-4 max-w-2xl text-center font-body text-type-nav text-film-cream/60">
               {title && (
-                <p className="font-body text-[9px] uppercase tracking-wider text-film-gold">
+                <p className="font-body text-type-label uppercase tracking-wider text-film-gold">
                   {title}
                 </p>
               )}
@@ -159,7 +159,7 @@ export default function PhotoLightbox({
           )}
 
           <p
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 font-body text-[9px] text-film-cream/30"
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 font-body text-type-label text-film-cream/30"
             aria-label={`${t("photoCounter")} ${index + 1} / ${photos.length}`}
           >
             {index + 1} / {photos.length}

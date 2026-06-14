@@ -41,7 +41,7 @@ export default async function PhotographyPage({
   return (
     <div className="min-h-screen">
       <div className="container-film pb-16 pt-40">
-        <p className="font-body text-[9px] uppercase tracking-[0.5em] text-film-cream/30">
+        <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
           {t("visualWork")}
         </p>
         <h1 className="mt-4 font-heading text-[48px] font-light leading-tight text-film-cream md:text-[80px]">

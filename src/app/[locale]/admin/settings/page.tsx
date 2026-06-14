@@ -14,13 +14,11 @@ function localizedKey(field: LocalizedField, tab: Tab): `${LocalizedField}_${Tab
   return `${field}_${tab}`;
 }
 
-const inputClass =
-  "w-full border-b border-[#2a2a2a] bg-transparent py-2 font-body text-[13px] text-film-cream placeholder:text-film-cream/20 transition-colors duration-300 focus:border-film-gold focus:outline-none";
-const labelClass = "font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
-const sectionLabelClass = "mb-4 font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
+const inputClass = "film-input";
+const labelClass = "film-label";
+const sectionLabelClass = "film-section-label";
 const sectionClass = "border border-[#2a2a2a] p-6";
-const uploadButtonClass =
-  "border border-[#2a2a2a] px-4 py-2 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold";
+const uploadButtonClass = "film-btn-ui";
 const removeButtonClass =
   "font-body text-lg text-film-cream/30 transition-colors duration-300 hover:text-red-400";
 
@@ -139,14 +137,19 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/site-config")
-      .then((response) => response.json())
-      .then((data) => {
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok || !data.id) {
+          throw new Error(data.error || "Failed to load settings");
+        }
         setConfig(data);
-        setLoading(false);
-      });
+      })
+      .catch((err: Error) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   const updateField = <K extends keyof SiteConfig>(field: K, value: SiteConfig[K]) => {
@@ -170,6 +173,7 @@ export default function AdminSettingsPage() {
     if (!config) return;
     setSaving(true);
     setSaved(false);
+    setError(null);
 
     const response = await fetch("/api/site-config", {
       method: "PUT",
@@ -177,15 +181,28 @@ export default function AdminSettingsPage() {
       body: JSON.stringify(config),
     });
 
+    const data = await response.json();
     setSaving(false);
+
     if (response.ok) {
+      setConfig(data);
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
+    } else {
+      setError(data.error || "Failed to save settings");
     }
   };
 
-  if (loading || !config) {
-    return <p className="font-body text-xs text-film-cream/30">Loading...</p>;
+  if (loading) {
+    return <p className="font-body text-type-nav text-film-cream/30">Loading...</p>;
+  }
+
+  if (error && !config) {
+    return <p className="font-body text-type-nav text-red-400">{error}</p>;
+  }
+
+  if (!config) {
+    return <p className="font-body text-type-nav text-film-cream/30">No settings found.</p>;
   }
 
   return (
@@ -214,7 +231,7 @@ export default function AdminSettingsPage() {
 
       <div className={sectionClass}>
         <div className="mb-6 flex items-center justify-between">
-          <p className="font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30">
+          <p className="font-body text-type-label uppercase tracking-[0.3em] text-film-cream/30">
             Bio / Theatre / Sports
           </p>
           <div className="flex gap-6 border-b border-[#2a2a2a]">
@@ -223,7 +240,7 @@ export default function AdminSettingsPage() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`pb-2 font-body text-[10px] uppercase tracking-[0.3em] transition-colors duration-300 ${
+                className={`pb-2 font-body text-type-ui uppercase tracking-[0.3em] transition-colors duration-300 ${
                   activeTab === tab
                     ? "border-b-2 border-film-gold text-film-cream"
                     : "text-film-cream/30 hover:text-film-cream/60"
@@ -338,7 +355,7 @@ export default function AdminSettingsPage() {
               <button
                 type="button"
                 onClick={() => open()}
-                className="mt-2 self-start border border-[#2a2a2a] px-4 py-2 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
+                className="mt-2 self-start border border-[#2a2a2a] px-4 py-2 font-body text-type-ui uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
               >
                 Upload CV
               </button>
@@ -396,10 +413,13 @@ export default function AdminSettingsPage() {
       <button
         type="submit"
         disabled={saving}
-        className="self-start bg-film-gold px-8 py-3 font-body text-[10px] font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
+        className="self-start bg-film-gold px-8 py-3 font-body text-type-ui font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
       >
         {saving ? "SAVING..." : saved ? "SAVED ✓" : "SAVE SETTINGS"}
       </button>
+      {error && config && (
+        <p className="font-body text-type-nav text-red-400">{error}</p>
+      )}
     </form>
   );
 }

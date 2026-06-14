@@ -28,7 +28,7 @@ export default async function ContactPage() {
   return (
     <div className="min-h-screen">
       <div className="container-film pb-16 pt-40">
-        <p className="font-body text-[9px] uppercase tracking-[0.5em] text-film-cream/30">
+        <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
           {t("getInTouch")}
         </p>
         <h1 className="mt-4 font-heading text-[48px] font-light leading-tight text-film-cream md:text-[80px]">
@@ -45,16 +45,16 @@ export default async function ContactPage() {
 
           <div className="flex flex-col gap-6">
             <div>
-              <p className="font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30">
+              <p className="font-body text-type-label uppercase tracking-[0.3em] text-film-cream/30">
                 {t("email")}
               </p>
-              <p className="mt-1 font-body text-sm text-film-cream/70">{email}</p>
+              <p className="mt-1 font-body text-type-copy text-film-cream/70">{email}</p>
             </div>
             <div>
-              <p className="font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30">
+              <p className="font-body text-type-label uppercase tracking-[0.3em] text-film-cream/30">
                 {t("location")}
               </p>
-              <p className="mt-1 font-body text-sm text-film-cream/70">
+              <p className="mt-1 font-body text-type-copy text-film-cream/70">
                 Whitehorse, Yukon, Canada
               </p>
             </div>
@@ -62,7 +62,7 @@ export default async function ContactPage() {
 
           {socials.length > 0 && (
             <div className="mt-10">
-              <p className="font-body text-[9px] uppercase tracking-[0.4em] text-film-cream/30">
+              <p className="font-body text-type-label uppercase tracking-[0.4em] text-film-cream/30">
                 {t("findMeOn")}
               </p>
               <div className="mt-4 flex flex-col gap-3">
@@ -72,7 +72,7 @@ export default async function ContactPage() {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 font-body text-[11px] tracking-wider text-film-cream/50 transition-colors duration-300 hover:text-film-gold"
+                    className="flex items-center gap-2 font-body text-type-nav tracking-wider text-film-cream/50 transition-colors duration-300 hover:text-film-gold"
                   >
                     {social.label}
                     <ExternalLink size={10} />

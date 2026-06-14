@@ -41,13 +41,13 @@ export default async function VideosPage({
   return (
     <div className="min-h-screen">
       <div className="container-film pb-16 pt-40">
-        <p className="font-body text-[9px] uppercase tracking-[0.5em] text-film-cream/30">
+        <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
           Work
         </p>
         <h1 className="mt-4 font-heading text-[48px] font-light leading-tight text-film-cream md:text-[80px]">
           {t("title")}
         </h1>
-        <p className="mt-3 font-body text-[10px] uppercase tracking-[0.2em] text-film-cream/30">
+        <p className="mt-3 font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/30">
           {t("subtitle")}
         </p>
         <div className="mt-8 h-px w-full bg-film-gray" />

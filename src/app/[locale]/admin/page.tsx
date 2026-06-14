@@ -35,7 +35,7 @@ export default async function AdminDashboardPage({
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {stats.map((stat) => (
           <div key={stat.label} className="border border-[#2a2a2a] p-6">
-            <p className="font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30">
+            <p className="font-body text-type-label uppercase tracking-[0.3em] text-film-cream/30">
               {stat.label}
             </p>
             <p
@@ -50,7 +50,7 @@ export default async function AdminDashboardPage({
       </div>
 
       <div className="mt-8">
-        <p className="mb-4 font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30">
+        <p className="mb-4 font-body text-type-label uppercase tracking-[0.3em] text-film-cream/30">
           Quick Actions
         </p>
         <div className="flex flex-wrap gap-4">
@@ -58,7 +58,7 @@ export default async function AdminDashboardPage({
             <Link
               key={action.label}
               href={action.href}
-              className="border border-[#2a2a2a] px-6 py-3 font-body text-[10px] tracking-wider text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-cream"
+              className="border border-[#2a2a2a] px-6 py-3 font-body text-type-ui tracking-wider text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-cream"
             >
               {action.label}
             </Link>

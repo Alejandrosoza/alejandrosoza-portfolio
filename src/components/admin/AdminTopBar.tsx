@@ -42,8 +42,8 @@ export default function AdminTopBar() {
 
   return (
     <header className="flex h-14 items-center justify-between border-b border-[#2a2a2a] px-6">
-      <p className="font-body text-xs text-film-cream/60">{getPageTitle(pathname, locale)}</p>
-      <p className="font-body text-[10px] text-film-cream/30">{email}</p>
+      <p className="font-body text-type-nav text-film-cream/60">{getPageTitle(pathname, locale)}</p>
+      <p className="font-body text-type-ui text-film-cream/30">{email}</p>
     </header>
   );
 }

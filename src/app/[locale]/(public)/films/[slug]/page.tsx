@@ -97,12 +97,12 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
       <div className="container-film border-b border-film-gray pb-8 pt-12">
         <Link
           href={`/${locale}/films`}
-          className="font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/40 transition-colors duration-300 hover:text-film-cream"
+          className="font-body text-type-label uppercase tracking-[0.3em] text-film-cream/40 transition-colors duration-300 hover:text-film-cream"
         >
           {t("backToFilms")}
         </Link>
 
-        <p className="mt-6 font-body text-[9px] uppercase tracking-[0.4em] text-film-gold">
+        <p className="mt-6 font-body text-type-label uppercase tracking-[0.4em] text-film-gold">
           {category}
         </p>
 
@@ -127,13 +127,13 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
           {/* Synopsis */}
           <div className="pt-12">
             <div className="flex items-center gap-4">
-              <span className="font-body text-[9px] uppercase tracking-[0.4em] text-film-cream/30">
+              <span className="font-body text-type-label uppercase tracking-[0.4em] text-film-cream/30">
                 {t("synopsis")}
               </span>
               <span className="h-px w-10 bg-film-gold" />
             </div>
             {synopsis && (
-              <p className="mt-4 max-w-[560px] font-body text-sm leading-[1.8] text-film-cream/70">
+              <p className="mt-4 max-w-[560px] font-body text-type-copy leading-[1.8] text-film-cream/70">
                 {synopsis}
               </p>
             )}
@@ -143,7 +143,7 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
           {statement && (
             <div className="pt-10">
               <div className="flex items-center gap-4">
-                <span className="font-body text-[9px] uppercase tracking-[0.4em] text-film-cream/30">
+                <span className="font-body text-type-label uppercase tracking-[0.4em] text-film-cream/30">
                   {t("directorStatement")}
                 </span>
                 <span className="h-px w-10 bg-film-gold" />
@@ -158,12 +158,12 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
           {typedFilm.credits && (
             <div className="pb-12 pt-10">
               <div className="flex items-center gap-4">
-                <span className="font-body text-[9px] uppercase tracking-[0.4em] text-film-cream/30">
+                <span className="font-body text-type-label uppercase tracking-[0.4em] text-film-cream/30">
                   {t("credits")}
                 </span>
                 <span className="h-px w-10 bg-film-gold" />
               </div>
-              <p className="mt-4 whitespace-pre-line font-body text-xs leading-[2] text-film-cream/50">
+              <p className="mt-4 whitespace-pre-line font-body text-type-nav leading-[2] text-film-cream/50">
                 {typedFilm.credits}
               </p>
             </div>
@@ -177,7 +177,7 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
               {typedFilm.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="border border-film-gray px-3 py-1 font-body text-[9px] uppercase tracking-[0.2em] text-film-cream/40"
+                  className="border border-film-gray px-3 py-1 font-body text-type-label uppercase tracking-[0.2em] text-film-cream/40"
                 >
                   {tag}
                 </span>
@@ -186,7 +186,7 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
           )}
 
           <div className="border border-film-gray p-6">
-            <p className="mb-4 font-body text-[9px] uppercase tracking-[0.4em] text-film-cream/20">
+            <p className="mb-4 font-body text-type-label uppercase tracking-[0.4em] text-film-cream/20">
               {t("filmDetails")}
             </p>
             <div className="flex flex-col gap-3">
@@ -207,7 +207,7 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
         <section className="bg-film-dark py-20">
           <div className="container-film">
             <div className="flex items-center gap-4">
-              <span className="font-body text-[9px] uppercase tracking-[0.4em] text-film-cream/30">
+              <span className="font-body text-type-label uppercase tracking-[0.4em] text-film-cream/30">
                 {t("behindScenes")}
               </span>
               <span className="h-px w-10 bg-film-gold" />
@@ -239,7 +239,7 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
           className="group block border-t border-film-gray py-16 transition-colors duration-[400ms] hover:bg-film-dark"
         >
           <div className="container-film flex items-center justify-between gap-6">
-            <span className="font-body text-[9px] uppercase tracking-[0.4em] text-film-cream/30">
+            <span className="font-body text-type-label uppercase tracking-[0.4em] text-film-cream/30">
               {t("nextFilm")}
             </span>
             <h3 className="font-heading text-[40px] font-light text-film-cream">
@@ -259,7 +259,7 @@ function MetaItem({ label, value }: { label: string; value: string }) {
       <span className="font-body text-[8px] uppercase tracking-widest text-film-cream/30">
         {label}
       </span>
-      <span className="font-body text-[11px] text-film-cream/70">{value}</span>
+      <span className="font-body text-type-nav text-film-cream/70">{value}</span>
     </div>
   );
 }
@@ -270,7 +270,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
       <span className="font-body text-[8px] uppercase tracking-widest text-film-cream/30">
         {label}
       </span>
-      <span className="font-body text-[11px] text-film-cream/70">{value}</span>
+      <span className="font-body text-type-nav text-film-cream/70">{value}</span>
     </div>
   );
 }

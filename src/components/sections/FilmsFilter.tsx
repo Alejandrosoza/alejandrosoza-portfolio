@@ -30,7 +30,7 @@ export default function FilmsFilter({ active, onChange, locale }: FilmsFilterPro
           key={option.value}
           type="button"
           onClick={() => onChange(option.value)}
-          className={`border-b pb-1 font-body text-[9px] uppercase tracking-[0.2em] transition-colors duration-300 ${
+          className={`border-b pb-1 font-body text-type-label uppercase tracking-[0.2em] transition-colors duration-300 ${
             active === option.value
               ? "border-film-gold text-film-cream/90"
               : "border-transparent text-film-cream/40 hover:text-film-cream/70"

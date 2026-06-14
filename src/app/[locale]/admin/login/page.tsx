@@ -31,9 +31,8 @@ export default function AdminLoginPage() {
     router.push("/en/admin");
   };
 
-  const inputClass =
-    "w-full border-b border-[#2a2a2a] bg-transparent py-3 font-body text-[13px] text-film-cream placeholder:text-film-cream/20 transition-colors duration-300 focus:border-film-gold focus:outline-none";
-  const labelClass = "font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
+  const inputClass = "film-input py-3";
+  const labelClass = "film-label";
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-film-black px-4">
@@ -42,13 +41,13 @@ export default function AdminLoginPage() {
           <h1 className="font-heading text-2xl font-light tracking-wide text-film-cream">
             ALEJANDRO SOZA
           </h1>
-          <p className="mt-2 font-body text-[9px] uppercase tracking-[0.4em] text-film-gold">
+          <p className="mt-2 font-body text-type-label uppercase tracking-[0.4em] text-film-gold">
             Admin
           </p>
         </div>
 
         <div className="border border-[#2a2a2a] bg-film-dark p-8">
-          <p className="mb-6 font-body text-sm text-film-cream/60">Sign In</p>
+          <p className="mb-6 font-body text-type-copy text-film-cream/60">Sign In</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
@@ -84,12 +83,12 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 w-full bg-film-gold py-3 font-body text-[10px] font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
+              className="mt-2 w-full bg-film-gold py-3 font-body text-type-ui font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
             >
               {loading ? "SIGNING IN..." : "SIGN IN"}
             </button>
 
-            {error && <p className="font-body text-[11px] text-red-400">{error}</p>}
+            {error && <p className="font-body text-type-nav text-red-400">{error}</p>}
           </form>
         </div>
       </div>

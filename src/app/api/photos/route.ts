@@ -1,9 +1,12 @@
-import { createAdminSupabaseClient } from "@/lib/supabase-server";
+import {
+  createPublicSupabaseClient,
+  requireAuthenticatedSupabaseClient,
+} from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const supabase = await createAdminSupabaseClient();
+    const supabase = createPublicSupabaseClient();
     const { data, error } = await supabase
       .from("photos")
       .select("*")
@@ -17,13 +20,13 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createAdminSupabaseClient();
+    const { supabase, user } = await requireAuthenticatedSupabaseClient();
+    if (!supabase || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
-    const { data, error } = await supabase
-      .from("photos")
-      .insert(body)
-      .select()
-      .single();
+    const { data, error } = await supabase.from("photos").insert(body).select().single();
     if (error) throw error;
     return NextResponse.json(data, { status: 201 });
   } catch {

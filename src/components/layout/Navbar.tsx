@@ -41,7 +41,7 @@ export default function Navbar() {
   };
 
   const LanguageSwitcher = ({ className = "" }: { className?: string }) => (
-    <div className={`flex items-center gap-2 font-body text-[13px] tracking-[0.15em] ${className}`}>
+    <div className={`flex items-center gap-2 font-body text-type-body tracking-[0.15em] ${className}`}>
       {LOCALES.map((loc, i) => (
         <span key={loc} className="flex items-center gap-2">
           <Link
@@ -74,7 +74,7 @@ export default function Navbar() {
             <span className="font-heading text-[15px] font-semibold tracking-widest text-film-cream">
               ALEJANDRO SOZA
             </span>
-            <span className="mt-1 font-body text-[9px] tracking-[0.3em] uppercase text-film-gold">
+            <span className="mt-1 font-body text-type-label tracking-[0.3em] uppercase text-film-gold">
               Film Director
             </span>
           </Link>
@@ -86,7 +86,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={`/${locale}${link.href}`}
-                  className={`border-b pb-1 font-body text-[13px] tracking-[0.15em] uppercase transition-colors duration-300 ${
+                  className={`border-b pb-1 font-body text-type-body tracking-[0.15em] uppercase transition-colors duration-300 ${
                     active
                       ? "border-film-gold text-film-cream"
                       : "border-transparent text-film-cream/70 hover:border-film-gold hover:text-film-cream"
@@ -129,7 +129,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={`/${locale}${link.href}`}
-                  className={`font-body text-sm tracking-[0.25em] uppercase transition-colors duration-300 ${
+                  className={`font-body text-type-copy tracking-[0.25em] uppercase transition-colors duration-300 ${
                     active ? "text-film-cream" : "text-film-cream/70 hover:text-film-cream"
                   }`}
                 >
@@ -138,7 +138,7 @@ export default function Navbar() {
               );
             })}
 
-            <LanguageSwitcher className="mt-8 text-xs" />
+            <LanguageSwitcher className="mt-8 text-type-nav" />
           </motion.div>
         )}
       </AnimatePresence>

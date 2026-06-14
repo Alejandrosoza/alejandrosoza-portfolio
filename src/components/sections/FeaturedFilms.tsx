@@ -17,7 +17,7 @@ export default function FeaturedFilms({ films, locale }: FeaturedFilmsProps) {
       <div className="container-film">
         <div className="mb-4 flex items-center gap-4">
           <span className="h-px w-10 bg-film-gold" />
-          <span className="font-heading text-[11px] uppercase tracking-[0.5em] text-film-cream/40">
+          <span className="font-heading text-type-nav uppercase tracking-[0.5em] text-film-cream/40">
             Selected Work
           </span>
         </div>
@@ -39,7 +39,7 @@ export default function FeaturedFilms({ films, locale }: FeaturedFilmsProps) {
         <div className="mt-12 text-center">
           <Link
             href={`/${locale}/films`}
-            className="font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/50 transition-colors duration-300 hover:text-film-gold"
+            className="font-body text-type-ui uppercase tracking-[0.3em] text-film-cream/50 transition-colors duration-300 hover:text-film-gold"
           >
             View All Films →
           </Link>
@@ -82,10 +82,10 @@ function FilmCard({
           <h3 className="translate-y-4 font-heading text-2xl text-film-cream opacity-0 transition-all duration-[400ms] group-hover:translate-y-0 group-hover:opacity-100">
             {title}
           </h3>
-          <p className="mt-1 font-body text-[10px] uppercase tracking-wider text-film-gold opacity-0 transition-opacity duration-[400ms] group-hover:opacity-100">
+          <p className="mt-1 font-body text-type-ui uppercase tracking-wider text-film-gold opacity-0 transition-opacity duration-[400ms] group-hover:opacity-100">
             {film.year} · {category}
           </p>
-          <p className="mt-3 font-body text-[9px] uppercase tracking-widest text-film-cream/70 opacity-0 transition-opacity duration-[400ms] group-hover:opacity-100">
+          <p className="mt-3 font-body text-type-label uppercase tracking-widest text-film-cream/70 opacity-0 transition-opacity duration-[400ms] group-hover:opacity-100">
             View Project →
           </p>
         </div>

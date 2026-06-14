@@ -38,9 +38,8 @@ export default function ContactForm() {
     }
   };
 
-  const inputClass =
-    "w-full border-b border-[#2a2a2a] bg-transparent py-3 font-body text-[13px] text-film-cream placeholder:text-film-cream/20 transition-colors duration-300 focus:border-film-gold focus:outline-none";
-  const labelClass = "font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
+  const inputClass = "film-input py-3";
+  const labelClass = "film-label";
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -105,7 +104,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className={`mt-4 w-full border py-4 font-body text-[10px] uppercase tracking-[0.3em] transition-colors duration-300 ${
+        className={`mt-4 w-full border py-4 font-body text-type-ui uppercase tracking-[0.3em] transition-colors duration-300 ${
           status === "success"
             ? "border-film-gold text-film-gold"
             : status === "error"

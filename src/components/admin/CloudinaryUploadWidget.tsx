@@ -23,7 +23,7 @@ export default function CloudinaryUploadWidget({
 }: CloudinaryUploadWidgetProps) {
   if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) {
     return (
-      <p className="font-body text-[10px] text-film-cream/40">
+      <p className="font-body text-type-ui text-film-cream/40">
         Cloudinary is not configured. Add NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME in your environment.
       </p>
     );

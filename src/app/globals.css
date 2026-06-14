@@ -21,6 +21,30 @@ body {
   background: var(--film-black);
   color: var(--film-cream);
   font-family: var(--font-inter), sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+@layer components {
+  .film-label {
+    @apply font-body text-type-label uppercase tracking-[0.25em] text-film-cream/30;
+  }
+
+  .film-section-label {
+    @apply mb-4 font-body text-type-label uppercase tracking-[0.25em] text-film-cream/30;
+  }
+
+  .film-input {
+    @apply w-full border-b border-[#2a2a2a] bg-transparent py-2 font-body text-type-body text-film-cream placeholder:text-film-cream/20 transition-colors duration-300 focus:border-film-gold focus:outline-none;
+  }
+
+  .film-btn-ui {
+    @apply border border-[#2a2a2a] px-4 py-2 font-body text-type-ui uppercase tracking-[0.25em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold;
+  }
+
+  .film-btn-primary {
+    @apply bg-film-gold px-8 py-3 font-body text-type-ui font-medium uppercase tracking-[0.25em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50;
+  }
 }
 
 ::selection {

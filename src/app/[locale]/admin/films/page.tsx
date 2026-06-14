@@ -50,10 +50,10 @@ export default function AdminFilmsPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <p className="font-body text-xs text-film-cream/60">Films</p>
+        <p className="font-body text-type-nav text-film-cream/60">Films</p>
         <Link
           href={`/${locale}/admin/films/new`}
-          className="border border-[#2a2a2a] px-4 py-2 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
+          className="border border-[#2a2a2a] px-4 py-2 font-body text-type-ui uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
         >
           ADD FILM →
         </Link>
@@ -61,34 +61,34 @@ export default function AdminFilmsPage() {
 
       <div className="mt-6 border border-[#2a2a2a]">
         {loading ? (
-          <p className="p-6 font-body text-xs text-film-cream/30">Loading...</p>
+          <p className="p-6 font-body text-type-nav text-film-cream/30">Loading...</p>
         ) : films.length === 0 ? (
-          <p className="p-6 font-body text-xs text-film-cream/30">
+          <p className="p-6 font-body text-type-nav text-film-cream/30">
             No films yet. Add your first film.
           </p>
         ) : (
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b border-[#2a2a2a]">
-                <th className="px-4 py-3 text-left font-body text-[9px] uppercase tracking-[0.2em] text-film-cream/30">
+                <th className="px-4 py-3 text-left font-body text-type-label uppercase tracking-[0.2em] text-film-cream/30">
                   Order
                 </th>
-                <th className="px-4 py-3 text-left font-body text-[9px] uppercase tracking-[0.2em] text-film-cream/30">
+                <th className="px-4 py-3 text-left font-body text-type-label uppercase tracking-[0.2em] text-film-cream/30">
                   Thumbnail
                 </th>
-                <th className="px-4 py-3 text-left font-body text-[9px] uppercase tracking-[0.2em] text-film-cream/30">
+                <th className="px-4 py-3 text-left font-body text-type-label uppercase tracking-[0.2em] text-film-cream/30">
                   Title (EN)
                 </th>
-                <th className="px-4 py-3 text-left font-body text-[9px] uppercase tracking-[0.2em] text-film-cream/30">
+                <th className="px-4 py-3 text-left font-body text-type-label uppercase tracking-[0.2em] text-film-cream/30">
                   Category
                 </th>
-                <th className="px-4 py-3 text-left font-body text-[9px] uppercase tracking-[0.2em] text-film-cream/30">
+                <th className="px-4 py-3 text-left font-body text-type-label uppercase tracking-[0.2em] text-film-cream/30">
                   Year
                 </th>
-                <th className="px-4 py-3 text-left font-body text-[9px] uppercase tracking-[0.2em] text-film-cream/30">
+                <th className="px-4 py-3 text-left font-body text-type-label uppercase tracking-[0.2em] text-film-cream/30">
                   Featured
                 </th>
-                <th className="px-4 py-3 text-left font-body text-[9px] uppercase tracking-[0.2em] text-film-cream/30">
+                <th className="px-4 py-3 text-left font-body text-type-label uppercase tracking-[0.2em] text-film-cream/30">
                   Actions
                 </th>
               </tr>
@@ -100,7 +100,7 @@ export default function AdminFilmsPage() {
                   className="border-b border-[#1a1a1a] transition-colors duration-150 hover:bg-white/[0.02]"
                 >
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-2 font-body text-[11px] text-film-cream/30">
+                    <div className="flex items-center gap-2 font-body text-type-nav text-film-cream/30">
                       <GripVertical size={14} />
                       {film.order_index}
                     </div>
@@ -116,13 +116,13 @@ export default function AdminFilmsPage() {
                       />
                     )}
                   </td>
-                  <td className="px-4 py-3 font-body text-[12px] text-film-cream">
+                  <td className="px-4 py-3 font-body text-type-body-sm text-film-cream">
                     {film.title_en}
                   </td>
-                  <td className="px-4 py-3 font-body text-[10px] text-film-gold">
+                  <td className="px-4 py-3 font-body text-type-ui text-film-gold">
                     {categoryLabel(film.category)}
                   </td>
-                  <td className="px-4 py-3 font-body text-[10px] text-film-cream/50">
+                  <td className="px-4 py-3 font-body text-type-ui text-film-cream/50">
                     {film.year}
                   </td>
                   <td className="px-4 py-3">
@@ -134,7 +134,7 @@ export default function AdminFilmsPage() {
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-4 font-body text-[10px] uppercase tracking-[0.2em]">
+                    <div className="flex items-center gap-4 font-body text-type-ui uppercase tracking-[0.2em]">
                       <Link
                         href={`/${locale}/admin/films/${film.id}/edit`}
                         className="text-film-cream/50 transition-colors duration-300 hover:text-film-gold"

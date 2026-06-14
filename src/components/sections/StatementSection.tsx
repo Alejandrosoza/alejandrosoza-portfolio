@@ -18,7 +18,7 @@ export default function StatementSection() {
           —Every frame is a decision. Every cut is a statement. Cinema is the
           language I am learning to speak.—
         </p>
-        <p className="mt-6 font-body text-[10px] uppercase tracking-[0.3em] text-film-gold">
+        <p className="mt-6 font-body text-type-ui uppercase tracking-[0.3em] text-film-gold">
           — Alejandro Soza
         </p>
       </motion.div>

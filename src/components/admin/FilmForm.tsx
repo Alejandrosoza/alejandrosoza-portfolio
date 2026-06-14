@@ -83,10 +83,9 @@ function buildInitialState(initialData?: Film): FormState {
   };
 }
 
-const inputClass =
-  "w-full border-b border-[#2a2a2a] bg-transparent py-2 font-body text-[13px] text-film-cream placeholder:text-film-cream/20 transition-colors duration-300 focus:border-film-gold focus:outline-none";
-const labelClass = "font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
-const sectionLabelClass = "mb-4 font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
+const inputClass = "film-input";
+const labelClass = "film-label";
+const sectionLabelClass = "film-section-label";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -194,7 +193,7 @@ export default function FilmForm({ initialData, filmId }: FilmFormProps) {
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`pb-3 font-body text-[10px] uppercase tracking-[0.3em] transition-colors duration-300 ${
+            className={`pb-3 font-body text-type-ui uppercase tracking-[0.3em] transition-colors duration-300 ${
               activeTab === tab
                 ? "border-b-2 border-film-gold text-film-cream"
                 : "text-film-cream/30 hover:text-film-cream/60"
@@ -310,7 +309,7 @@ export default function FilmForm({ initialData, filmId }: FilmFormProps) {
               onChange={(event) => updateField("featured", event.target.checked)}
               className="h-4 w-4 accent-film-gold"
             />
-            <label htmlFor="featured" className="font-body text-[11px] text-film-cream/60">
+            <label htmlFor="featured" className="font-body text-type-nav text-film-cream/60">
               Show on homepage
             </label>
           </div>
@@ -404,7 +403,7 @@ export default function FilmForm({ initialData, filmId }: FilmFormProps) {
           <button
             type="button"
             onClick={addBtsField}
-            className="self-start border border-[#2a2a2a] px-4 py-2 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
+            className="self-start border border-[#2a2a2a] px-4 py-2 font-body text-type-ui uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
           >
             Add Photo
           </button>
@@ -414,7 +413,7 @@ export default function FilmForm({ initialData, filmId }: FilmFormProps) {
       <button
         type="submit"
         disabled={saving}
-        className="self-start bg-film-gold px-8 py-3 font-body text-[10px] font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
+        className="self-start bg-film-gold px-8 py-3 font-body text-type-ui font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
       >
         {saving ? "SAVING..." : "SAVE FILM"}
       </button>

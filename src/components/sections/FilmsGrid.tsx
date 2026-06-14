@@ -75,16 +75,16 @@ function FilmCard({
         </div>
 
         <div className="bg-film-black py-4">
-          <p className="font-body text-[9px] uppercase tracking-[0.3em] text-film-gold">
+          <p className="font-body text-type-label uppercase tracking-[0.3em] text-film-gold">
             {category}
           </p>
           <h3 className="mt-1 font-heading text-[28px] font-normal text-film-cream transition-colors duration-300 group-hover:text-film-sepia">
             {title}
           </h3>
           {role && (
-            <p className="mt-1 font-body text-[10px] text-film-cream/50">{role}</p>
+            <p className="mt-1 font-body text-type-ui text-film-cream/50">{role}</p>
           )}
-          <p className="mt-2 font-body text-[9px] uppercase tracking-wider text-film-cream/30">
+          <p className="mt-2 font-body text-type-label uppercase tracking-wider text-film-cream/30">
             {film.year}
             {film.runtime_minutes ? ` · ${film.runtime_minutes} MIN` : ""}
           </p>

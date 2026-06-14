@@ -82,12 +82,12 @@ function PhotoItem({
         {(title || caption) && (
           <div className="translate-y-full p-4 transition-transform duration-300 group-hover:translate-y-0">
             {title && (
-              <p className="font-body text-[9px] uppercase tracking-wider text-film-gold">
+              <p className="font-body text-type-label uppercase tracking-wider text-film-gold">
                 {title}
               </p>
             )}
             {caption && (
-              <p className="mt-1 font-body text-[11px] italic text-film-cream/80">{caption}</p>
+              <p className="mt-1 font-body text-type-nav italic text-film-cream/80">{caption}</p>
             )}
           </div>
         )}

@@ -42,7 +42,7 @@ export default function HeroSection({ showreelId, locale }: HeroSectionProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="font-body text-[9px] uppercase tracking-[0.4em] text-film-cream/40"
+          className="font-body text-type-label uppercase tracking-[0.4em] text-film-cream/40"
         >
           Whitehorse, Yukon — Canada
         </motion.p>
@@ -81,7 +81,7 @@ export default function HeroSection({ showreelId, locale }: HeroSectionProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.95 }}
-          className="font-body text-[11px] uppercase tracking-[0.5em] text-film-gold"
+          className="font-body text-type-nav uppercase tracking-[0.5em] text-film-gold"
         >
           Film Director
         </motion.p>
@@ -94,7 +94,7 @@ export default function HeroSection({ showreelId, locale }: HeroSectionProps) {
         >
           <Link
             href={`/${locale}/films`}
-            className="border border-film-cream/30 px-8 py-3 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream transition-colors duration-[400ms] hover:border-film-gold hover:text-film-gold"
+            className="border border-film-cream/30 px-8 py-3 font-body text-type-ui uppercase tracking-[0.3em] text-film-cream transition-colors duration-[400ms] hover:border-film-gold hover:text-film-gold"
           >
             {t("viewWork")}
           </Link>
@@ -102,7 +102,7 @@ export default function HeroSection({ showreelId, locale }: HeroSectionProps) {
           <button
             type="button"
             onClick={() => setShowreelOpen(true)}
-            className="flex items-center gap-2 font-body text-[10px] uppercase tracking-[0.2em] text-film-cream/40 transition-colors duration-[400ms] hover:text-film-cream/70"
+            className="flex items-center gap-2 font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/40 transition-colors duration-[400ms] hover:text-film-cream/70"
           >
             <Play size={12} fill="currentColor" />
             {t("watchReel")}
@@ -113,7 +113,7 @@ export default function HeroSection({ showreelId, locale }: HeroSectionProps) {
       {/* Scroll indicator */}
       <div className="absolute bottom-10 right-10 hidden flex-col items-center gap-3 md:flex">
         <span
-          className="font-body text-[9px] tracking-[0.3em] text-film-cream/20"
+          className="font-body text-type-label tracking-[0.3em] text-film-cream/20"
           style={{ writingMode: "vertical-rl" }}
         >
           SCROLL

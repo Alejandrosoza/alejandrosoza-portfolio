@@ -36,9 +36,8 @@ function buildInitialState(video: Video | null): FormState {
   };
 }
 
-const inputClass =
-  "w-full border-b border-[#2a2a2a] bg-transparent py-2 font-body text-[13px] text-film-cream placeholder:text-film-cream/20 transition-colors duration-300 focus:border-film-gold focus:outline-none";
-const labelClass = "font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
+const inputClass = "film-input";
+const labelClass = "film-label";
 
 export default function VideoModal({ video, onClose, onSaved }: VideoModalProps) {
   const [form, setForm] = useState<FormState>(() => buildInitialState(video));
@@ -84,7 +83,7 @@ export default function VideoModal({ video, onClose, onSaved }: VideoModalProps)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
       <div className="w-full max-w-[480px] border border-[#2a2a2a] bg-film-dark p-8">
-        <p className="mb-6 font-body text-xs text-film-cream/60">
+        <p className="mb-6 font-body text-type-nav text-film-cream/60">
           {video ? "Edit Video" : "Add Video"}
         </p>
 
@@ -180,14 +179,14 @@ export default function VideoModal({ video, onClose, onSaved }: VideoModalProps)
             <button
               type="submit"
               disabled={saving}
-              className="bg-film-gold px-8 py-3 font-body text-[10px] font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
+              className="bg-film-gold px-8 py-3 font-body text-type-ui font-medium uppercase tracking-[0.3em] text-film-black transition-colors duration-300 hover:bg-film-sepia disabled:opacity-50"
             >
               {saving ? "SAVING..." : "SAVE VIDEO"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/30 transition-colors duration-300 hover:text-film-cream"
+              className="font-body text-type-ui uppercase tracking-[0.3em] text-film-cream/30 transition-colors duration-300 hover:text-film-cream"
             >
               Cancel
             </button>
