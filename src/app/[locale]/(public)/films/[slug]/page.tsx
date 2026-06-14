@@ -9,6 +9,8 @@ import { getCloudinaryUrl } from "@/lib/cloudinary-url";
 import { localized } from "@/lib/utils";
 import { FILM_CATEGORIES } from "@/lib/constants";
 import YouTubeEmbed from "@/components/ui/YouTubeEmbed";
+import JsonLd from "@/components/ui/JsonLd";
+import { filmSchema } from "@/lib/schema";
 import type { Film, Locale } from "@/lib/types";
 
 interface FilmDetailPageProps {
@@ -86,6 +88,8 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
 
   return (
     <div className="min-h-screen">
+      <JsonLd data={filmSchema(typedFilm)} />
+
       {/* Section A — Video hero */}
       <YouTubeEmbed youtubeId={typedFilm.youtube_id} title={title} />
 

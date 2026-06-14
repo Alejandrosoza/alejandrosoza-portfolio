@@ -4,6 +4,8 @@ Trilingual (EN/ES/FR) portfolio site for Alejandro Soza, an emerging film
 director based in Whitehorse, Yukon, Canada. Built for a Cinema & Media Arts
 university application portfolio.
 
+**Status:** Production
+
 **Live site:** https://alejandrosoza.ca
 
 ## Tech Stack

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.0.0] — Production Release
+
+### Added
+
+- `robots.txt` with sitemap reference.
+- Dynamic `sitemap.xml` (static pages + all film slugs, trilingual).
+- JSON-LD schema: Person (global) + Movie (per film).
+- Open Graph image (edge runtime, cinematic dark design).
+- Resend email integration for contact form.
+- Security headers via `vercel.json`.
+- Next.js performance: avif/webp images, compression, cache headers.
+- Production deployment to Vercel.
+
 ## [0.2.0] - 2026-06-13
 
 ### Added

@@ -4,6 +4,8 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import JsonLd from "@/components/ui/JsonLd";
+import { personSchema } from "@/lib/schema";
 import "../globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -95,6 +97,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${cormorant.variable} ${inter.variable}`}>
       <body>
+        <JsonLd data={personSchema()} />
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
