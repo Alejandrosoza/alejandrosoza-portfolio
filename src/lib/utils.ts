@@ -4,14 +4,15 @@ import type { Locale } from "./types";
  * Returns a localized field value (e.g. `title_en`/`title_es`/`title_fr`)
  * from a record, falling back to English if the requested locale is missing.
  */
-export function localized<T extends Record<string, unknown>>(
+export function localized<T extends object>(
   obj: T,
   field: string,
   locale: Locale
 ): string {
+  const record = obj as Record<string, unknown>;
   return (
-    (obj[`${field}_${locale}`] as string) ||
-    (obj[`${field}_en`] as string) ||
+    (record[`${field}_${locale}`] as string) ||
+    (record[`${field}_en`] as string) ||
     ""
   );
 }
