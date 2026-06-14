@@ -5,6 +5,8 @@ import Image from "next/image";
 import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
 import type { Photo } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 const inputClass =
   "w-full border-b border-[#2a2a2a] bg-transparent py-2 font-body text-[13px] text-film-cream placeholder:text-film-cream/20 transition-colors duration-300 focus:border-film-gold focus:outline-none";
 const labelClass = "font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
