@@ -374,13 +374,13 @@ export default function AdminSettingsPage() {
         <div className="flex flex-col gap-8">
           <PhotoListField
             label="Theatre Photos"
-            photos={config.theatre_photos}
+            photos={config.theatre_photos ?? []}
             folder="alejandrosoza/theatre"
             onChange={(photos) => updateField("theatre_photos", photos)}
           />
           <YoutubeListField
             label="Theatre YouTube Videos"
-            ids={config.theatre_youtube_ids}
+            ids={config.theatre_youtube_ids ?? []}
             onChange={(ids) => updateField("theatre_youtube_ids", ids)}
           />
         </div>
@@ -391,13 +391,13 @@ export default function AdminSettingsPage() {
         <div className="flex flex-col gap-8">
           <PhotoListField
             label="Sports Photos"
-            photos={config.sports_photos}
+            photos={config.sports_photos ?? []}
             folder="alejandrosoza/sports"
             onChange={(photos) => updateField("sports_photos", photos)}
           />
           <YoutubeListField
             label="Sports YouTube Videos"
-            ids={config.sports_youtube_ids}
+            ids={config.sports_youtube_ids ?? []}
             onChange={(ids) => updateField("sports_youtube_ids", ids)}
           />
         </div>

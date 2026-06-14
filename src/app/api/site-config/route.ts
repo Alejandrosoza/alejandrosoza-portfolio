@@ -6,7 +6,13 @@ export async function GET() {
     const supabase = await createAdminSupabaseClient();
     const { data, error } = await supabase.from("site_config").select("*").single();
     if (error) throw error;
-    return NextResponse.json(data);
+    return NextResponse.json({
+      ...data,
+      theatre_photos: data?.theatre_photos ?? [],
+      theatre_youtube_ids: data?.theatre_youtube_ids ?? [],
+      sports_photos: data?.sports_photos ?? [],
+      sports_youtube_ids: data?.sports_youtube_ids ?? [],
+    });
   } catch {
     return NextResponse.json({ error: "Failed to fetch site config" }, { status: 500 });
   }
