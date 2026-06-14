@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -122,11 +123,22 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
           </div>
 
           <div className="lg:w-[60%]">
-            <div className="relative flex aspect-video items-center justify-center border border-[#2a2a2a] bg-film-gray">
-              <span className="font-body text-[9px] uppercase tracking-widest text-film-cream/20">
-                {t("theatrePhoto")}
-              </span>
-            </div>
+            {config?.theatre_photo_url ? (
+              <div className="relative aspect-video overflow-hidden border border-[#2a2a2a]">
+                <Image
+                  src={config.theatre_photo_url}
+                  alt={t("theatrePhoto")}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="relative flex aspect-video items-center justify-center border border-[#2a2a2a] bg-film-gray">
+                <span className="font-body text-[9px] uppercase tracking-widest text-film-cream/20">
+                  {t("theatrePhoto")}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -135,11 +147,22 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
       <section className="border-t border-[#2a2a2a] bg-film-dark py-20">
         <div className="container-film flex flex-col gap-12 lg:flex-row lg:items-center">
           <div className="lg:w-[60%]">
-            <div className="relative flex aspect-[4/3] items-center justify-center border border-[#2a2a2a] bg-film-gray">
-              <span className="font-body text-[9px] uppercase tracking-widest text-film-cream/20">
-                {t("sportsPhoto")}
-              </span>
-            </div>
+            {config?.sports_photo_url ? (
+              <div className="relative aspect-[4/3] overflow-hidden border border-[#2a2a2a]">
+                <Image
+                  src={config.sports_photo_url}
+                  alt={t("sportsPhoto")}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="relative flex aspect-[4/3] items-center justify-center border border-[#2a2a2a] bg-film-gray">
+                <span className="font-body text-[9px] uppercase tracking-widest text-film-cream/20">
+                  {t("sportsPhoto")}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="lg:w-[40%]">

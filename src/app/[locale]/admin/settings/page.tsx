@@ -52,6 +52,18 @@ export default function AdminSettingsPage() {
     }
   };
 
+  const handleTheatrePhotoUpload = (results: CloudinaryUploadWidgetResults) => {
+    if (results.info && typeof results.info !== "string") {
+      updateField("theatre_photo_url", results.info.secure_url);
+    }
+  };
+
+  const handleSportsPhotoUpload = (results: CloudinaryUploadWidgetResults) => {
+    if (results.info && typeof results.info !== "string") {
+      updateField("sports_photo_url", results.info.secure_url);
+    }
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!config) return;
@@ -169,6 +181,77 @@ export default function AdminSettingsPage() {
               }
               className={inputClass}
             />
+          </div>
+        </div>
+      </div>
+
+      <div className={sectionClass}>
+        <p className={sectionLabelClass}>Photos</p>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <label className={labelClass}>Theatre Photo URL</label>
+            <input
+              value={config.theatre_photo_url}
+              onChange={(event) => updateField("theatre_photo_url", event.target.value)}
+              className={inputClass}
+            />
+            {config.theatre_photo_url && (
+              <Image
+                src={config.theatre_photo_url}
+                alt="Theatre photo preview"
+                width={160}
+                height={120}
+                className="mt-2 h-[120px] w-40 object-cover"
+              />
+            )}
+            <CloudinaryUploadWidget
+              uploadPreset="alejandrosoza_portfolio"
+              options={{ folder: "alejandrosoza/theatre" }}
+              onSuccess={handleTheatrePhotoUpload}
+            >
+              {({ open }) => (
+                <button
+                  type="button"
+                  onClick={() => open()}
+                  className="mt-2 self-start border border-[#2a2a2a] px-4 py-2 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
+                >
+                  Upload Theatre Photo
+                </button>
+              )}
+            </CloudinaryUploadWidget>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className={labelClass}>Sports Photo URL</label>
+            <input
+              value={config.sports_photo_url}
+              onChange={(event) => updateField("sports_photo_url", event.target.value)}
+              className={inputClass}
+            />
+            {config.sports_photo_url && (
+              <Image
+                src={config.sports_photo_url}
+                alt="Sports photo preview"
+                width={160}
+                height={120}
+                className="mt-2 h-[120px] w-40 object-cover"
+              />
+            )}
+            <CloudinaryUploadWidget
+              uploadPreset="alejandrosoza_portfolio"
+              options={{ folder: "alejandrosoza/sports" }}
+              onSuccess={handleSportsPhotoUpload}
+            >
+              {({ open }) => (
+                <button
+                  type="button"
+                  onClick={() => open()}
+                  className="mt-2 self-start border border-[#2a2a2a] px-4 py-2 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
+                >
+                  Upload Sports Photo
+                </button>
+              )}
+            </CloudinaryUploadWidget>
           </div>
         </div>
       </div>
