@@ -53,6 +53,21 @@ export function formatFilmDate(year: number, month?: number): string {
 }
 
 /**
+ * Replace the locale segment of a pathname (e.g. `/en/films` -> `/es/films`).
+ * Falls back to prefixing the target locale if no locale segment is present.
+ */
+export function switchLocalePath(
+  pathname: string,
+  targetLocale: string,
+  locales: readonly string[]
+): string {
+  const pattern = new RegExp(`^/(${locales.join("|")})(?=/|$)`);
+  return pattern.test(pathname)
+    ? pathname.replace(pattern, `/${targetLocale}`)
+    : `/${targetLocale}${pathname}`;
+}
+
+/**
  * Generate a URL-friendly slug from a title.
  */
 export function slugify(text: string): string {
