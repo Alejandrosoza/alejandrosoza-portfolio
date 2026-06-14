@@ -2,10 +2,9 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import Image from "next/image";
-import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
+import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
+import CloudinaryUploadWidget from "@/components/admin/CloudinaryUploadWidget";
 import type { Photo } from "@/lib/types";
-
-export const dynamic = "force-dynamic";
 
 const inputClass =
   "w-full border-b border-[#2a2a2a] bg-transparent py-2 font-body text-[13px] text-film-cream placeholder:text-film-cream/20 transition-colors duration-300 focus:border-film-gold focus:outline-none";
@@ -99,7 +98,7 @@ export default function AdminPhotosPage() {
 
       <div className="mt-6 border border-[#2a2a2a] p-6">
         <p className={`${labelClass} mb-4`}>Upload Photo</p>
-        <CldUploadWidget
+        <CloudinaryUploadWidget
           uploadPreset="alejandrosoza_portfolio"
           options={{ folder: "alejandrosoza/photos" }}
           onSuccess={handleUploadSuccess}
@@ -113,7 +112,7 @@ export default function AdminPhotosPage() {
               Select Image
             </button>
           )}
-        </CldUploadWidget>
+        </CloudinaryUploadWidget>
 
         {pendingUrl && (
           <form onSubmit={handleSavePhoto} className="mt-6 flex flex-col gap-5">

@@ -2,7 +2,8 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import Image from "next/image";
-import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
+import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
+import CloudinaryUploadWidget from "@/components/admin/CloudinaryUploadWidget";
 import { extractYouTubeId, getYouTubeThumbnail } from "@/lib/utils";
 import type { SiteConfig } from "@/lib/types";
 
@@ -181,7 +182,7 @@ export default function AdminSettingsPage() {
             onChange={(event) => updateField("cv_url", event.target.value)}
             className={inputClass}
           />
-          <CldUploadWidget
+          <CloudinaryUploadWidget
             uploadPreset="alejandrosoza_portfolio"
             options={{ folder: "alejandrosoza/documents" }}
             onSuccess={handleCvUpload}
@@ -195,7 +196,7 @@ export default function AdminSettingsPage() {
                 Upload CV
               </button>
             )}
-          </CldUploadWidget>
+          </CloudinaryUploadWidget>
         </div>
       </div>
 

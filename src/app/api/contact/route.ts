@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     const resend = new Resend(apiKey);
 
     await resend.emails.send({
-      from: "Portfolio Contact <onboarding@resend.dev>",
+      from: "Portfolio Contact <noreply@alejandrosoza.ca>",
       to: [process.env.ADMIN_EMAIL || "soza.ale@gmail.com"],
       subject: `[alejandrosoza.ca] ${subject} — from ${name}`,
       html: `
