@@ -1,4 +1,8 @@
-import type { Locale, SiteConfig } from "./types";
+import type { Locale, SiteConfig, TheatreProduction } from "./types";
+
+function generateProductionId(): string {
+  return `tp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+}
 
 /**
  * Normalizes gallery array fields: trim, drop empty, dedupe (preserve order).
@@ -14,6 +18,73 @@ export function sanitizeStringArray(value: unknown): string[] {
     result.push(trimmed);
   }
   return result;
+}
+
+export function sanitizeTheatreProductions(value: unknown): TheatreProduction[] {
+  if (!Array.isArray(value)) return [];
+
+  const result: TheatreProduction[] = [];
+  for (const item of value) {
+    if (!item || typeof item !== "object") continue;
+    const record = item as Record<string, unknown>;
+    const id = String(record.id ?? "").trim() || generateProductionId();
+
+    result.push({
+      id,
+      title_en: String(record.title_en ?? "").trim(),
+      title_es: String(record.title_es ?? "").trim(),
+      title_fr: String(record.title_fr ?? "").trim(),
+      description_en: String(record.description_en ?? "").trim(),
+      description_es: String(record.description_es ?? "").trim(),
+      description_fr: String(record.description_fr ?? "").trim(),
+      photos: sanitizeStringArray(record.photos),
+      youtube_ids: sanitizeStringArray(record.youtube_ids),
+      order_index: Number(record.order_index ?? result.length),
+    });
+  }
+
+  return result.sort((a, b) => a.order_index - b.order_index);
+}
+
+/**
+ * Returns theatre productions from config, migrating legacy flat gallery fields
+ * into a single default production when needed.
+ */
+export function normalizeTheatreProductions(
+  config: Partial<SiteConfig> | null | undefined
+): TheatreProduction[] {
+  const productions = sanitizeTheatreProductions(config?.theatre_productions);
+  if (productions.length > 0) return productions;
+
+  const photos = sanitizeStringArray(config?.theatre_photos);
+  const youtubeIds = sanitizeStringArray(config?.theatre_youtube_ids);
+  if (photos.length === 0 && youtubeIds.length === 0) return [];
+
+  return [
+    {
+      id: "legacy-theatre",
+      title_en: "Shakespearean Theatre",
+      title_es: "Teatro Shakespeariano",
+      title_fr: "Théâtre Shakespearien",
+      description_en: "",
+      description_es: "",
+      description_fr: "",
+      photos,
+      youtube_ids: youtubeIds,
+      order_index: 0,
+    },
+  ];
+}
+
+/** Sync legacy flat gallery columns from the first production. */
+export function legacyTheatreGalleryFromProductions(
+  productions: TheatreProduction[]
+): { theatre_photos: string[]; theatre_youtube_ids: string[] } {
+  const first = productions[0];
+  return {
+    theatre_photos: first ? sanitizeStringArray(first.photos) : [],
+    theatre_youtube_ids: first ? sanitizeStringArray(first.youtube_ids) : [],
+  };
 }
 
 /** Returns only photo URLs that respond with HTTP 2xx. */
@@ -38,6 +109,9 @@ export async function filterReachablePhotoUrls(urls: string[]): Promise<string[]
  * Builds an explicit site_config update payload with sanitized gallery arrays.
  */
 export function buildSiteConfigPayload(config: SiteConfig) {
+  const theatreProductions = sanitizeTheatreProductions(config.theatre_productions);
+  const legacyTheatre = legacyTheatreGalleryFromProductions(theatreProductions);
+
   return {
     id: config.id,
     showreel_youtube_id: config.showreel_youtube_id ?? "",
@@ -53,8 +127,9 @@ export function buildSiteConfigPayload(config: SiteConfig) {
     sports_en: config.sports_en ?? "",
     sports_es: config.sports_es ?? "",
     sports_fr: config.sports_fr ?? "",
-    theatre_photos: sanitizeStringArray(config.theatre_photos),
-    theatre_youtube_ids: sanitizeStringArray(config.theatre_youtube_ids),
+    theatre_productions: theatreProductions,
+    theatre_photos: legacyTheatre.theatre_photos,
+    theatre_youtube_ids: legacyTheatre.theatre_youtube_ids,
     sports_photos: sanitizeStringArray(config.sports_photos),
     sports_youtube_ids: sanitizeStringArray(config.sports_youtube_ids),
     cv_url: config.cv_url ?? "",

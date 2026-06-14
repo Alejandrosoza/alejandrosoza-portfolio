@@ -2,10 +2,12 @@ import {
   createPublicSupabaseClient,
   requireAuthenticatedSupabaseClient,
 } from "@/lib/supabase-server";
-import { buildSiteConfigPayload, sanitizeStringArray } from "@/lib/utils";
+import { buildSiteConfigPayload, normalizeTheatreProductions, sanitizeStringArray } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
 function formatSiteConfig(data: Record<string, unknown>) {
+  const theatreProductions = normalizeTheatreProductions(data as never);
+
   return {
     id: data.id,
     showreel_youtube_id: data.showreel_youtube_id,
@@ -21,6 +23,7 @@ function formatSiteConfig(data: Record<string, unknown>) {
     sports_en: data.sports_en,
     sports_es: data.sports_es,
     sports_fr: data.sports_fr,
+    theatre_productions: theatreProductions,
     theatre_photos: sanitizeStringArray(data.theatre_photos),
     theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
     sports_photos: sanitizeStringArray(data.sports_photos),

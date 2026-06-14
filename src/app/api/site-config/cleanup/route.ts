@@ -1,8 +1,16 @@
 import { requireAuthenticatedSupabaseClient } from "@/lib/supabase-server";
-import { filterReachablePhotoUrls, sanitizeStringArray } from "@/lib/utils";
+import {
+  filterReachablePhotoUrls,
+  legacyTheatreGalleryFromProductions,
+  normalizeTheatreProductions,
+  sanitizeStringArray,
+  sanitizeTheatreProductions,
+} from "@/lib/utils";
 import { NextResponse } from "next/server";
 
 function formatSiteConfig(data: Record<string, unknown>) {
+  const theatreProductions = normalizeTheatreProductions(data as never);
+
   return {
     id: data.id,
     showreel_youtube_id: data.showreel_youtube_id,
@@ -18,6 +26,7 @@ function formatSiteConfig(data: Record<string, unknown>) {
     sports_en: data.sports_en,
     sports_es: data.sports_es,
     sports_fr: data.sports_fr,
+    theatre_productions: theatreProductions,
     theatre_photos: sanitizeStringArray(data.theatre_photos),
     theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
     sports_photos: sanitizeStringArray(data.sports_photos),
@@ -47,16 +56,36 @@ export async function POST() {
 
     const theatreBefore = sanitizeStringArray(data.theatre_photos);
     const sportsBefore = sanitizeStringArray(data.sports_photos);
+    const productionsBefore = normalizeTheatreProductions(data as never);
+
     const theatreAfter = await filterReachablePhotoUrls(theatreBefore);
     const sportsAfter = await filterReachablePhotoUrls(sportsBefore);
+
+    const productionsAfter = await Promise.all(
+      productionsBefore.map(async (production) => ({
+        ...production,
+        photos: await filterReachablePhotoUrls(sanitizeStringArray(production.photos)),
+      }))
+    );
 
     const removed = {
       theatre: theatreBefore.filter((url) => !theatreAfter.includes(url)),
       sports: sportsBefore.filter((url) => !sportsAfter.includes(url)),
+      theatre_productions: productionsBefore.flatMap((production) =>
+        production.photos.filter(
+          (url) =>
+            !productionsAfter
+              .find((item) => item.id === production.id)
+              ?.photos.includes(url)
+        )
+      ),
     };
 
+    const legacyTheatre = legacyTheatreGalleryFromProductions(productionsAfter);
     const changed =
-      theatreBefore.length !== theatreAfter.length || sportsBefore.length !== sportsAfter.length;
+      theatreBefore.length !== theatreAfter.length ||
+      sportsBefore.length !== sportsAfter.length ||
+      JSON.stringify(productionsBefore) !== JSON.stringify(productionsAfter);
 
     if (!changed) {
       return NextResponse.json({ config: formatSiteConfig(data), removed, changed: false });
@@ -65,7 +94,8 @@ export async function POST() {
     const { data: updated, error: updateError } = await supabase
       .from("site_config")
       .update({
-        theatre_photos: theatreAfter,
+        theatre_productions: sanitizeTheatreProductions(productionsAfter),
+        theatre_photos: legacyTheatre.theatre_photos,
         sports_photos: sportsAfter,
         theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
         sports_youtube_ids: sanitizeStringArray(data.sports_youtube_ids),

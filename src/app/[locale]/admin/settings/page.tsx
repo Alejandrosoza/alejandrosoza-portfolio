@@ -3,9 +3,16 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import CloudinaryUploadWidget from "@/components/admin/CloudinaryUploadWidget";
-import { buildSiteConfigPayload, extractYouTubeId, getYouTubeThumbnail, sanitizeStringArray } from "@/lib/utils";
-import type { SiteConfig } from "@/lib/types";
+import {
+  buildSiteConfigPayload,
+  extractYouTubeId,
+  getYouTubeThumbnail,
+  normalizeTheatreProductions,
+  sanitizeStringArray,
+} from "@/lib/utils";
+import type { SiteConfig, TheatreProduction } from "@/lib/types";
 
 type Tab = "en" | "es" | "fr";
 type LocalizedField = "bio_short" | "bio_long" | "theatre" | "sports";
@@ -14,6 +21,33 @@ function localizedKey(field: LocalizedField, tab: Tab): `${LocalizedField}_${Tab
   return `${field}_${tab}`;
 }
 
+function createEmptyProduction(orderIndex: number): TheatreProduction {
+  return {
+    id: `tp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+    title_en: "",
+    title_es: "",
+    title_fr: "",
+    description_en: "",
+    description_es: "",
+    description_fr: "",
+    photos: [],
+    youtube_ids: [],
+    order_index: orderIndex,
+  };
+}
+
+function parseLoadedConfig(data: SiteConfig): SiteConfig {
+  const theatreProductions = normalizeTheatreProductions(data);
+
+  return {
+    ...data,
+    theatre_productions: theatreProductions,
+    theatre_photos: sanitizeStringArray(data.theatre_photos),
+    theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
+    sports_photos: sanitizeStringArray(data.sports_photos),
+    sports_youtube_ids: sanitizeStringArray(data.sports_youtube_ids),
+  };
+}
 const inputClass = "film-input";
 const labelClass = "film-label";
 const sectionLabelClass = "film-section-label";
@@ -86,15 +120,27 @@ function PhotoListField({
     };
   }, []);
 
-  const uploaded = sanitizeStringArray(photos);
+  const uploadedUrls = sanitizeStringArray(photos);
   const draftSlots = photos.map((url, index) => ({ url, index })).filter((slot) => !slot.url.trim());
+
+  const setUploadedOrder = (nextUrls: string[]) => {
+    onChange([...nextUrls, ...draftSlots.map((slot) => slot.url)]);
+  };
+
+  const reorderUploaded = (from: number, to: number) => {
+    if (to < 0 || to >= uploadedUrls.length) return;
+    const next = [...uploadedUrls];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    setUploadedOrder(next);
+  };
 
   const updateAt = (index: number, value: string) => {
     onChange(photos.map((url, i) => (i === index ? value : url)));
   };
 
-  const removeUploaded = (url: string) => {
-    onChange(photos.filter((item) => item !== url));
+  const removeUploadedAt = (index: number) => {
+    setUploadedOrder(uploadedUrls.filter((_, i) => i !== index));
   };
 
   const removeDraftAt = (index: number) => {
@@ -125,14 +171,37 @@ function PhotoListField({
     <div className="flex flex-col gap-3">
       <label className={labelClass}>{label}</label>
 
-      {uploaded.map((url) => (
-        <div key={url} className="flex items-center gap-3">
+      {uploadedUrls.map((url, index) => (
+        <div key={`${index}-${url}`} className="flex items-center gap-2">
+          <span className="w-6 shrink-0 text-center font-body text-type-ui text-film-cream/40">
+            {index + 1}
+          </span>
+          <div className="flex shrink-0 flex-col gap-0.5">
+            <button
+              type="button"
+              onClick={() => reorderUploaded(index, index - 1)}
+              disabled={index === 0}
+              aria-label="Move photo up"
+              className="text-film-cream/40 transition-colors duration-300 hover:text-film-gold disabled:opacity-20"
+            >
+              <ChevronUp size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={() => reorderUploaded(index, index + 1)}
+              disabled={index === uploadedUrls.length - 1}
+              aria-label="Move photo down"
+              className="text-film-cream/40 transition-colors duration-300 hover:text-film-gold disabled:opacity-20"
+            >
+              <ChevronDown size={14} />
+            </button>
+          </div>
           <PhotoThumbnail url={url} />
           <input value={url} readOnly className={`${inputClass} flex-1 text-film-cream/60`} />
           <span className="shrink-0 font-body text-type-ui text-film-gold">Uploaded ✓</span>
           <button
             type="button"
-            onClick={() => removeUploaded(url)}
+            onClick={() => removeUploadedAt(index)}
             className="shrink-0 font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/50 transition-colors duration-300 hover:text-red-400"
           >
             × Remove
@@ -193,6 +262,150 @@ function PhotoListField({
           Add Photo
         </button>
       </div>
+    </div>
+  );
+}
+
+type ProductionTitleKey = `title_${Tab}`;
+type ProductionDescriptionKey = `description_${Tab}`;
+
+function productionTitleKey(tab: Tab): ProductionTitleKey {
+  return `title_${tab}`;
+}
+
+function productionDescriptionKey(tab: Tab): ProductionDescriptionKey {
+  return `description_${tab}`;
+}
+
+function TheatreProductionsField({
+  productions,
+  activeTab,
+  onChange,
+}: {
+  productions: TheatreProduction[];
+  activeTab: Tab;
+  onChange: (productions: TheatreProduction[]) => void;
+}) {
+  const titleKey = productionTitleKey(activeTab);
+  const descriptionKey = productionDescriptionKey(activeTab);
+
+  const updateProduction = (id: string, patch: Partial<TheatreProduction>) => {
+    onChange(productions.map((production) => (production.id === id ? { ...production, ...patch } : production)));
+  };
+
+  const removeProduction = (id: string) => {
+    onChange(
+      productions
+        .filter((production) => production.id !== id)
+        .map((production, index) => ({ ...production, order_index: index }))
+    );
+  };
+
+  const moveProduction = (index: number, direction: -1 | 1) => {
+    const target = index + direction;
+    if (target < 0 || target >= productions.length) return;
+    const next = [...productions];
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next.map((production, orderIndex) => ({ ...production, order_index: orderIndex })));
+  };
+
+  const appendPhotos = (id: string, urls: string[]) => {
+    const production = productions.find((item) => item.id === id);
+    if (!production || urls.length === 0) return;
+    const existing = sanitizeStringArray(production.photos);
+    const merged = [...existing, ...urls.filter((url) => !existing.includes(url))];
+    updateProduction(id, { photos: merged });
+  };
+
+  return (
+    <div className="flex flex-col gap-6">
+      {productions.map((production, index) => (
+        <div key={production.id} className="border border-[#2a2a2a] p-4">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <p className="font-body text-type-label uppercase tracking-[0.3em] text-film-cream/30">
+              Production {index + 1}
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => moveProduction(index, -1)}
+                disabled={index === 0}
+                aria-label="Move production up"
+                className="text-film-cream/40 transition-colors duration-300 hover:text-film-gold disabled:opacity-20"
+              >
+                <ChevronUp size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => moveProduction(index, 1)}
+                disabled={index === productions.length - 1}
+                aria-label="Move production down"
+                className="text-film-cream/40 transition-colors duration-300 hover:text-film-gold disabled:opacity-20"
+              >
+                <ChevronDown size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => removeProduction(production.id)}
+                className="font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/50 transition-colors duration-300 hover:text-red-400"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <label className={labelClass}>Production Title ({activeTab.toUpperCase()})</label>
+              <input
+                value={production[titleKey]}
+                onChange={(event) => updateProduction(production.id, { [titleKey]: event.target.value })}
+                placeholder='e.g. "The Tempest"'
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass}>Production Description ({activeTab.toUpperCase()})</label>
+              <textarea
+                rows={3}
+                value={production[descriptionKey]}
+                onChange={(event) =>
+                  updateProduction(production.id, { [descriptionKey]: event.target.value })
+                }
+                placeholder="Optional notes about this specific play or production."
+                className={inputClass}
+              />
+            </div>
+
+            <PhotoListField
+              label="Photos (first photo = hero image on About page)"
+              photos={production.photos}
+              folder="alejandrosoza/theatre"
+              onChange={(photos) => updateProduction(production.id, { photos })}
+              onAppendMany={(urls) => appendPhotos(production.id, urls)}
+            />
+
+            <YoutubeListField
+              label="YouTube Videos"
+              ids={production.youtube_ids}
+              onChange={(ids) =>
+                updateProduction(production.id, { youtube_ids: sanitizeStringArray(ids) })
+              }
+            />
+          </div>
+        </div>
+      ))}
+
+      <button
+        type="button"
+        onClick={() =>
+          onChange([...productions, createEmptyProduction(productions.length)])
+        }
+        className={`self-start ${uploadButtonClass}`}
+      >
+        Add Production
+      </button>
     </div>
   );
 }
@@ -264,13 +477,7 @@ export default function AdminSettingsPage() {
           if (cleanupData.changed) {
             console.log("Gallery cleanup removed broken URLs:", cleanupData.removed);
           }
-          setConfig({
-            ...cleanupData.config,
-            theatre_photos: sanitizeStringArray(cleanupData.config.theatre_photos),
-            theatre_youtube_ids: sanitizeStringArray(cleanupData.config.theatre_youtube_ids),
-            sports_photos: sanitizeStringArray(cleanupData.config.sports_photos),
-            sports_youtube_ids: sanitizeStringArray(cleanupData.config.sports_youtube_ids),
-          });
+          setConfig(parseLoadedConfig(cleanupData.config));
           return;
         }
 
@@ -279,13 +486,7 @@ export default function AdminSettingsPage() {
         if (!response.ok || !data.id) {
           throw new Error(data.error || "Failed to load settings");
         }
-        setConfig({
-          ...data,
-          theatre_photos: sanitizeStringArray(data.theatre_photos),
-          theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
-          sports_photos: sanitizeStringArray(data.sports_photos),
-          sports_youtube_ids: sanitizeStringArray(data.sports_youtube_ids),
-        });
+        setConfig(parseLoadedConfig(data));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load settings");
       } finally {
@@ -335,9 +536,6 @@ export default function AdminSettingsPage() {
     setError(null);
 
     const payload = buildSiteConfigPayload(config);
-    console.log("SAVE SETTINGS payload:", payload);
-    console.log("theatre_photos:", payload.theatre_photos);
-    console.log("sports_photos:", payload.sports_photos);
 
     const response = await fetch("/api/site-config", {
       method: "PUT",
@@ -349,13 +547,7 @@ export default function AdminSettingsPage() {
     setSaving(false);
 
     if (response.ok) {
-      setConfig({
-        ...data,
-        theatre_photos: sanitizeStringArray(data.theatre_photos),
-        theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
-        sports_photos: sanitizeStringArray(data.sports_photos),
-        sports_youtube_ids: sanitizeStringArray(data.sports_youtube_ids),
-      });
+      setConfig(parseLoadedConfig(data));
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } else {
@@ -474,21 +666,16 @@ export default function AdminSettingsPage() {
       </div>
 
       <div className={sectionClass}>
-        <p className={sectionLabelClass}>Theatre Gallery</p>
-        <div className="flex flex-col gap-8">
-          <PhotoListField
-            label="Theatre Photos"
-            photos={config.theatre_photos ?? []}
-            folder="alejandrosoza/theatre"
-            onChange={(photos) => updateField("theatre_photos", photos)}
-            onAppendMany={(urls) => appendGalleryPhotos("theatre_photos", urls)}
-          />
-          <YoutubeListField
-            label="Theatre YouTube Videos"
-            ids={config.theatre_youtube_ids ?? []}
-            onChange={(ids) => updateField("theatre_youtube_ids", ids)}
-          />
-        </div>
+        <p className={sectionLabelClass}>Theatre Productions</p>
+        <p className="mb-6 font-body text-type-ui text-film-cream/40">
+          Each production is a separate play or project on the About page. Reorder photos with the
+          arrows — the first photo is the hero image.
+        </p>
+        <TheatreProductionsField
+          productions={config.theatre_productions ?? []}
+          activeTab={activeTab}
+          onChange={(productions) => updateField("theatre_productions", productions)}
+        />
       </div>
 
       <div className={sectionClass}>

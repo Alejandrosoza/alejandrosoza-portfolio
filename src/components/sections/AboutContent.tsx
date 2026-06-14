@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -9,8 +9,8 @@ import { Download } from "lucide-react";
 import PhotoLightbox from "@/components/ui/PhotoLightbox";
 import YouTubeEmbed from "@/components/ui/YouTubeEmbed";
 import { getOptimizedImageUrl } from "@/lib/cloudinary-url";
-import { localized, sanitizeStringArray } from "@/lib/utils";
-import type { Locale, Photo, SiteConfig } from "@/lib/types";
+import { localized, normalizeTheatreProductions, sanitizeStringArray } from "@/lib/utils";
+import type { Locale, Photo, SiteConfig, TheatreProduction } from "@/lib/types";
 
 const PLACEHOLDERS: Record<"bioLong" | "bioShort" | "theatre" | "sports", Record<Locale, string>> = {
   bioLong: {
@@ -61,21 +61,23 @@ function MediaGallery({ photos, youtubeIds, videoLabel, idPrefix, locale }: Medi
   return (
     <div className="mt-12">
       {photos.length > 0 && (
-        <div className="grid grid-cols-2 gap-[2px] md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
           {photos.map((url, index) => (
             <button
               key={index}
               type="button"
               onClick={() => setActiveIndex(index)}
-              className="group relative aspect-[4/3] overflow-hidden"
+              className="group overflow-hidden border border-[#2a2a2a] bg-film-gray"
             >
               <Image
-                src={getOptimizedImageUrl(url, { width: 600 })}
+                src={getOptimizedImageUrl(url, { width: 800 })}
                 alt=""
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                width={800}
+                height={600}
+                sizes="(max-width: 768px) 50vw, 33vw"
+                className="h-auto w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                style={{ width: "100%", height: "auto" }}
               />
-              <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/30" />
             </button>
           ))}
         </div>
@@ -103,6 +105,71 @@ function MediaGallery({ photos, youtubeIds, videoLabel, idPrefix, locale }: Medi
   );
 }
 
+function TheatreProductionBlock({
+  production,
+  locale,
+  videoLabel,
+  isFirst,
+}: {
+  production: TheatreProduction;
+  locale: Locale;
+  videoLabel: string;
+  isFirst: boolean;
+}) {
+  const title = localized(production, "title", locale);
+  const description = localized(production, "description", locale);
+  const photos = sanitizeStringArray(production.photos);
+  const youtubeIds = sanitizeStringArray(production.youtube_ids);
+  const heroPhoto = photos[0];
+
+  return (
+    <div className={isFirst ? "mt-12" : "mt-16 border-t border-[#2a2a2a] pt-16"}>
+      {title && (
+        <h3 className="font-heading text-[32px] font-light text-film-cream md:text-[40px]">{title}</h3>
+      )}
+      {description && (
+        <p className="mt-4 max-w-[680px] font-body text-type-copy leading-[1.8] text-film-cream/60">
+          {description}
+        </p>
+      )}
+
+      <div className={`flex flex-col gap-12 ${title || description ? "mt-8" : ""} lg:flex-row lg:items-start`}>
+        {heroPhoto && (
+          <div className="lg:w-[60%]">
+            <div className="overflow-hidden border border-[#2a2a2a] bg-film-gray">
+              <Image
+                src={getOptimizedImageUrl(heroPhoto, { width: 1200 })}
+                alt={title || "Theatre production"}
+                width={1200}
+                height={800}
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                className="h-auto w-full object-contain"
+                style={{ width: "100%", height: "auto" }}
+              />
+            </div>
+          </div>
+        )}
+
+        {!heroPhoto && photos.length === 0 && youtubeIds.length === 0 && (
+          <div className="relative flex aspect-video w-full items-center justify-center border border-[#2a2a2a] bg-film-gray lg:w-[60%]">
+            <span className="font-body text-type-label uppercase tracking-widest text-film-cream/20">
+              Theatre Photography
+            </span>
+          </div>
+        )}
+      </div>
+
+      <MediaGallery
+        photos={heroPhoto ? photos.slice(1) : photos}
+        youtubeIds={youtubeIds}
+        videoLabel={videoLabel}
+        idPrefix={`theatre-${production.id}`}
+        locale={locale}
+      />
+    </div>
+  );
+}
+
 interface AboutContentProps {
   config: SiteConfig | null;
   locale: Locale;
@@ -115,22 +182,10 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
   const bioShort = (config && localized(config, "bio_short", locale)) || PLACEHOLDERS.bioShort[locale];
   const theatre = (config && localized(config, "theatre", locale)) || PLACEHOLDERS.theatre[locale];
   const sports = (config && localized(config, "sports", locale)) || PLACEHOLDERS.sports[locale];
-  const theatrePhotos = sanitizeStringArray(config?.theatre_photos);
+  const theatreProductions = normalizeTheatreProductions(config);
   const sportsPhotos = sanitizeStringArray(config?.sports_photos);
-  const theatreYoutubeIds = sanitizeStringArray(config?.theatre_youtube_ids);
   const sportsYoutubeIds = sanitizeStringArray(config?.sports_youtube_ids);
-  const theatrePhoto = theatrePhotos[0];
   const sportsPhoto = sportsPhotos[0];
-
-  useEffect(() => {
-    console.log("AboutContent gallery data:", {
-      theatre_photos: theatrePhotos,
-      sports_photos: sportsPhotos,
-      theatre_youtube_ids: theatreYoutubeIds,
-      sports_youtube_ids: sportsYoutubeIds,
-      raw_config: config,
-    });
-  }, [config, theatrePhotos, sportsPhotos, theatreYoutubeIds, sportsYoutubeIds]);
 
   return (
     <div>
@@ -198,45 +253,26 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
 
       {/* Section C — On Stage */}
       <section className="container-film py-20">
-        <div className="flex flex-col gap-12 lg:flex-row lg:items-center">
-          <div className="lg:w-[40%]">
-            <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
-              {t("onStage")}
-            </p>
-            <h2 className="mt-4 font-heading text-[48px] font-light text-film-cream">
-              {t("theatre")}
-            </h2>
-            <div className="my-6 h-px w-[60px] bg-film-gold" />
-            <p className="font-body text-type-copy leading-[1.8] text-film-cream/60">{theatre}</p>
-          </div>
-
-          <div className="lg:w-[60%]">
-            {theatrePhoto ? (
-              <div className="relative aspect-video overflow-hidden border border-[#2a2a2a]">
-                <Image
-                  src={getOptimizedImageUrl(theatrePhoto, { width: 1200 })}
-                  alt={t("theatrePhoto")}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ) : (
-              <div className="relative flex aspect-video items-center justify-center border border-[#2a2a2a] bg-film-gray">
-                <span className="font-body text-type-label uppercase tracking-widest text-film-cream/20">
-                  {t("theatrePhoto")}
-                </span>
-              </div>
-            )}
-          </div>
+        <div className="lg:w-[55%]">
+          <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
+            {t("onStage")}
+          </p>
+          <h2 className="mt-4 font-heading text-[48px] font-light text-film-cream">
+            {t("theatre")}
+          </h2>
+          <div className="my-6 h-px w-[60px] bg-film-gold" />
+          <p className="font-body text-type-copy leading-[1.8] text-film-cream/60">{theatre}</p>
         </div>
 
-        <MediaGallery
-          photos={theatrePhoto ? theatrePhotos.slice(1) : theatrePhotos}
-          youtubeIds={theatreYoutubeIds}
-          videoLabel={t("theatreVideo")}
-          idPrefix="theatre"
-          locale={locale}
-        />
+        {theatreProductions.map((production, index) => (
+          <TheatreProductionBlock
+            key={production.id}
+            production={production}
+            locale={locale}
+            videoLabel={t("theatreVideo")}
+            isFirst={index === 0}
+          />
+        ))}
       </section>
 
       {/* Section D — Beyond the Frame */}
@@ -244,12 +280,15 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
         <div className="container-film flex flex-col gap-12 lg:flex-row lg:items-center">
           <div className="lg:w-[60%]">
             {sportsPhoto ? (
-              <div className="relative aspect-[4/3] overflow-hidden border border-[#2a2a2a]">
+              <div className="overflow-hidden border border-[#2a2a2a] bg-film-gray">
                 <Image
                   src={getOptimizedImageUrl(sportsPhoto, { width: 1200 })}
                   alt={t("sportsPhoto")}
-                  fill
-                  className="object-cover"
+                  width={1200}
+                  height={900}
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                  className="h-auto w-full object-contain"
+                  style={{ width: "100%", height: "auto" }}
                 />
               </div>
             ) : (

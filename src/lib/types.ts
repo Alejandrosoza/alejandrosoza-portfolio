@@ -64,6 +64,19 @@ export interface Photo {
   created_at: string;
 }
 
+export interface TheatreProduction {
+  id: string;
+  title_en: string;
+  title_es: string;
+  title_fr: string;
+  description_en: string;
+  description_es: string;
+  description_fr: string;
+  photos: string[];
+  youtube_ids: string[];
+  order_index: number;
+}
+
 export interface SiteConfig {
   id: string;
   showreel_youtube_id: string;
@@ -81,6 +94,7 @@ export interface SiteConfig {
   sports_fr: string;
   theatre_photos: string[];
   theatre_youtube_ids: string[];
+  theatre_productions: TheatreProduction[];
   sports_photos: string[];
   sports_youtube_ids: string[];
   cv_url?: string;
