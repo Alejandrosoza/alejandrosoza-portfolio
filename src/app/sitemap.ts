@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { createAdminSupabaseClient } from "@/lib/supabase-server";
+import { createPublicSupabaseClient } from "@/lib/supabase-server";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://alejandrosoza.ca";
@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
 
   try {
-    const supabase = await createAdminSupabaseClient();
+    const supabase = createPublicSupabaseClient();
     const { data: films } = await supabase
       .from("films")
       .select("slug, updated_at")

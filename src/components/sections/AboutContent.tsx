@@ -115,6 +115,8 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
   const bioShort = (config && localized(config, "bio_short", locale)) || PLACEHOLDERS.bioShort[locale];
   const theatre = (config && localized(config, "theatre", locale)) || PLACEHOLDERS.theatre[locale];
   const sports = (config && localized(config, "sports", locale)) || PLACEHOLDERS.sports[locale];
+  const theatrePhoto = config?.theatre_photos?.[0];
+  const sportsPhoto = config?.sports_photos?.[0];
 
   return (
     <div>
@@ -195,10 +197,10 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
           </div>
 
           <div className="lg:w-[60%]">
-            {config?.theatre_photo_url ? (
+            {theatrePhoto ? (
               <div className="relative aspect-video overflow-hidden border border-[#2a2a2a]">
                 <Image
-                  src={config.theatre_photo_url}
+                  src={getOptimizedImageUrl(theatrePhoto, { width: 1200 })}
                   alt={t("theatrePhoto")}
                   fill
                   className="object-cover"
@@ -215,7 +217,7 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
         </div>
 
         <MediaGallery
-          photos={config?.theatre_photos ?? []}
+          photos={theatrePhoto ? (config?.theatre_photos ?? []).slice(1) : (config?.theatre_photos ?? [])}
           youtubeIds={config?.theatre_youtube_ids ?? []}
           videoLabel={t("theatreVideo")}
           idPrefix="theatre"
@@ -227,10 +229,10 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
       <section className="border-t border-[#2a2a2a] bg-film-dark py-20">
         <div className="container-film flex flex-col gap-12 lg:flex-row lg:items-center">
           <div className="lg:w-[60%]">
-            {config?.sports_photo_url ? (
+            {sportsPhoto ? (
               <div className="relative aspect-[4/3] overflow-hidden border border-[#2a2a2a]">
                 <Image
-                  src={config.sports_photo_url}
+                  src={getOptimizedImageUrl(sportsPhoto, { width: 1200 })}
                   alt={t("sportsPhoto")}
                   fill
                   className="object-cover"
@@ -259,7 +261,7 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
 
         <div className="container-film">
           <MediaGallery
-            photos={config?.sports_photos ?? []}
+            photos={sportsPhoto ? (config?.sports_photos ?? []).slice(1) : (config?.sports_photos ?? [])}
             youtubeIds={config?.sports_youtube_ids ?? []}
             videoLabel={t("sportsVideo")}
             idPrefix="sports"
