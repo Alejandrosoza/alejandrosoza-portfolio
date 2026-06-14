@@ -236,9 +236,6 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
                 </span>
               </div>
             )}
-            <p className="mt-3 font-body text-type-label tracking-wider text-film-cream/30">
-              Whitehorse, Yukon, Canada
-            </p>
           </motion.div>
         </div>
       </section>
