@@ -41,7 +41,7 @@ export default function Navbar() {
   };
 
   const LanguageSwitcher = ({ className = "" }: { className?: string }) => (
-    <div className={`flex items-center gap-2 font-body text-[10px] tracking-widest ${className}`}>
+    <div className={`flex items-center gap-2 font-body text-[13px] tracking-[0.15em] ${className}`}>
       {LOCALES.map((loc, i) => (
         <span key={loc} className="flex items-center gap-2">
           <Link
@@ -86,7 +86,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={`/${locale}${link.href}`}
-                  className={`border-b pb-1 font-body text-[11px] tracking-[0.2em] uppercase transition-colors duration-300 ${
+                  className={`border-b pb-1 font-body text-[13px] tracking-[0.15em] uppercase transition-colors duration-300 ${
                     active
                       ? "border-film-gold text-film-cream"
                       : "border-transparent text-film-cream/70 hover:border-film-gold hover:text-film-cream"
