@@ -11,7 +11,8 @@ const CldUploadWidget = dynamic(
 interface CloudinaryUploadWidgetProps {
   uploadPreset: string;
   options?: { folder?: string; multiple?: boolean };
-  onSuccess: (results: CloudinaryUploadWidgetResults) => void;
+  onSuccess?: (results: CloudinaryUploadWidgetResults) => void;
+  onQueuesEnd?: (results: CloudinaryUploadWidgetResults) => void;
   children: (props: { open: () => void }) => React.ReactNode;
 }
 
@@ -19,6 +20,7 @@ export default function CloudinaryUploadWidget({
   uploadPreset,
   options,
   onSuccess,
+  onQueuesEnd,
   children,
 }: CloudinaryUploadWidgetProps) {
   if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) {
@@ -30,7 +32,12 @@ export default function CloudinaryUploadWidget({
   }
 
   return (
-    <CldUploadWidget uploadPreset={uploadPreset} options={options} onSuccess={onSuccess}>
+    <CldUploadWidget
+      uploadPreset={uploadPreset}
+      options={options}
+      onSuccess={onSuccess}
+      onQueuesEnd={onQueuesEnd}
+    >
       {children}
     </CldUploadWidget>
   );

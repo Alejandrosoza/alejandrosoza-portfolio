@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import CloudinaryUploadWidget from "@/components/admin/CloudinaryUploadWidget";
@@ -49,14 +49,17 @@ function PhotoListField({
   photos,
   folder,
   onChange,
-  onAppend,
+  onAppendMany,
 }: {
   label: string;
   photos: string[];
   folder: string;
   onChange: (photos: string[]) => void;
-  onAppend: (url: string) => void;
+  onAppendMany: (urls: string[]) => void;
 }) {
+  const pendingBatchRef = useRef<string[]>([]);
+  const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const extractUploadUrl = (results: CloudinaryUploadWidgetResults): string | null => {
     if (results.info && typeof results.info === "object" && "secure_url" in results.info) {
       return (results.info as { secure_url: string }).secure_url;
@@ -64,75 +67,117 @@ function PhotoListField({
     return null;
   };
 
+  const flushPendingBatch = () => {
+    if (pendingBatchRef.current.length === 0) return;
+    const batch = [...pendingBatchRef.current];
+    pendingBatchRef.current = [];
+    onAppendMany(batch);
+  };
+
+  const queueUploadUrl = (url: string) => {
+    pendingBatchRef.current.push(url);
+    if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
+    flushTimerRef.current = setTimeout(flushPendingBatch, 400);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
+    };
+  }, []);
+
+  const uploaded = sanitizeStringArray(photos);
+  const draftSlots = photos.map((url, index) => ({ url, index })).filter((slot) => !slot.url.trim());
+
   const updateAt = (index: number, value: string) => {
     onChange(photos.map((url, i) => (i === index ? value : url)));
   };
 
-  const removeAt = (index: number) => {
+  const removeUploaded = (url: string) => {
+    onChange(photos.filter((item) => item !== url));
+  };
+
+  const removeDraftAt = (index: number) => {
     onChange(photos.filter((_, i) => i !== index));
   };
 
   const handleBulkUploadSuccess = (results: CloudinaryUploadWidgetResults) => {
     const url = extractUploadUrl(results);
-    if (url) onAppend(url);
+    if (url) queueUploadUrl(url);
+  };
+
+  const handleBulkQueuesEnd = () => {
+    if (flushTimerRef.current) {
+      clearTimeout(flushTimerRef.current);
+      flushTimerRef.current = null;
+    }
+    flushPendingBatch();
   };
 
   const handleSlotUploadSuccess = (index: number, results: CloudinaryUploadWidgetResults) => {
     const url = extractUploadUrl(results);
     if (!url) return;
-    onAppend(url);
-    removeAt(index);
+    onAppendMany([url]);
+    removeDraftAt(index);
   };
 
   return (
     <div className="flex flex-col gap-3">
       <label className={labelClass}>{label}</label>
 
-      {photos.map((url, index) =>
-        url.trim() ? (
-          <div key={`photo-${index}-${url}`} className="flex items-center gap-3">
-            <PhotoThumbnail url={url} />
-            <input value={url} readOnly className={`${inputClass} flex-1 text-film-cream/60`} />
-            <span className="shrink-0 font-body text-type-ui text-film-gold">Uploaded ✓</span>
-            <button
-              type="button"
-              onClick={() => removeAt(index)}
-              className="shrink-0 font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/50 transition-colors duration-300 hover:text-red-400"
-            >
-              × Remove
-            </button>
-          </div>
-        ) : (
-          <div key={`draft-${index}`} className="flex items-center gap-3">
-            <input
-              value={url}
-              onChange={(event) => updateAt(index, event.target.value)}
-              placeholder="https://res.cloudinary.com/..."
-              className={`${inputClass} flex-1`}
-            />
-            <CloudinaryUploadWidget
-              uploadPreset="alejandrosoza_portfolio"
-              options={{ folder }}
-              onSuccess={(results) => handleSlotUploadSuccess(index, results)}
-            >
-              {({ open }) => (
-                <button type="button" onClick={() => open()} className={uploadButtonClass}>
-                  Upload
-                </button>
-              )}
-            </CloudinaryUploadWidget>
-            <button type="button" onClick={() => removeAt(index)} className={removeButtonClass}>
-              ×
-            </button>
-          </div>
-        )
-      )}
+      {uploaded.map((url) => (
+        <div key={url} className="flex items-center gap-3">
+          <PhotoThumbnail url={url} />
+          <input value={url} readOnly className={`${inputClass} flex-1 text-film-cream/60`} />
+          <span className="shrink-0 font-body text-type-ui text-film-gold">Uploaded ✓</span>
+          <button
+            type="button"
+            onClick={() => removeUploaded(url)}
+            className="shrink-0 font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/50 transition-colors duration-300 hover:text-red-400"
+          >
+            × Remove
+          </button>
+        </div>
+      ))}
+
+      {draftSlots.map(({ url, index }) => (
+        <div key={`draft-${index}`} className="flex items-center gap-3">
+          <input
+            value={url}
+            onChange={(event) => updateAt(index, event.target.value)}
+            onBlur={() => {
+              const trimmed = url.trim();
+              if (trimmed) {
+                onAppendMany([trimmed]);
+                removeDraftAt(index);
+              }
+            }}
+            placeholder="https://res.cloudinary.com/..."
+            className={`${inputClass} flex-1`}
+          />
+          <CloudinaryUploadWidget
+            uploadPreset="alejandrosoza_portfolio"
+            options={{ folder }}
+            onSuccess={(results) => handleSlotUploadSuccess(index, results)}
+          >
+            {({ open }) => (
+              <button type="button" onClick={() => open()} className={uploadButtonClass}>
+                Upload
+              </button>
+            )}
+          </CloudinaryUploadWidget>
+          <button type="button" onClick={() => removeDraftAt(index)} className={removeButtonClass}>
+            ×
+          </button>
+        </div>
+      ))}
 
       <div className="flex flex-wrap gap-3">
         <CloudinaryUploadWidget
           uploadPreset="alejandrosoza_portfolio"
           options={{ folder, multiple: true }}
           onSuccess={handleBulkUploadSuccess}
+          onQueuesEnd={handleBulkQueuesEnd}
         >
           {({ open }) => (
             <button type="button" onClick={() => open()} className={uploadButtonClass}>
@@ -232,15 +277,19 @@ export default function AdminSettingsPage() {
     setConfig((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
 
-  const appendGalleryPhoto = (field: "theatre_photos" | "sports_photos", url: string) => {
-    setConfig((prev) =>
-      prev
-        ? {
-            ...prev,
-            [field]: [...sanitizeStringArray(prev[field]), url],
-          }
-        : prev
-    );
+  const appendGalleryPhotos = (
+    field: "theatre_photos" | "sports_photos",
+    urls: string[]
+  ) => {
+    if (urls.length === 0) return;
+    setConfig((prev) => {
+      if (!prev) return prev;
+      const current = prev[field] ?? [];
+      const existing = sanitizeStringArray(current);
+      const drafts = current.filter((item) => !item.trim());
+      const merged = [...existing, ...urls.filter((url) => !existing.includes(url))];
+      return { ...prev, [field]: [...merged, ...drafts] };
+    });
   };
 
   const handleShowreelBlur = () => {
@@ -409,7 +458,7 @@ export default function AdminSettingsPage() {
             photos={config.theatre_photos ?? []}
             folder="alejandrosoza/theatre"
             onChange={(photos) => updateField("theatre_photos", photos)}
-            onAppend={(url) => appendGalleryPhoto("theatre_photos", url)}
+            onAppendMany={(urls) => appendGalleryPhotos("theatre_photos", urls)}
           />
           <YoutubeListField
             label="Theatre YouTube Videos"
@@ -427,7 +476,7 @@ export default function AdminSettingsPage() {
             photos={config.sports_photos ?? []}
             folder="alejandrosoza/sports"
             onChange={(photos) => updateField("sports_photos", photos)}
-            onAppend={(url) => appendGalleryPhoto("sports_photos", url)}
+            onAppendMany={(urls) => appendGalleryPhotos("sports_photos", urls)}
           />
           <YoutubeListField
             label="Sports YouTube Videos"
