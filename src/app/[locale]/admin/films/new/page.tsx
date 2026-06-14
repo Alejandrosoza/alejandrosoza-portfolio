@@ -1,3 +1,5 @@
+import FilmForm from "@/components/admin/FilmForm";
+
 export default function AdminNewFilmPage() {
-  return null;
+  return <FilmForm />;
 }
