@@ -10,6 +10,7 @@ import {
   extractYouTubeId,
   getYouTubeThumbnail,
   normalizeTheatreProductions,
+  readPortraitUrl,
   sanitizeStringArray,
 } from "@/lib/utils";
 import type { SiteConfig, TheatreProduction } from "@/lib/types";
@@ -41,7 +42,7 @@ function parseLoadedConfig(data: SiteConfig): SiteConfig {
 
   return {
     ...data,
-    portrait_url: data.portrait_url ?? "",
+    portrait_url: readPortraitUrl(data as unknown as Record<string, unknown>),
     theatre_productions: theatreProductions,
     theatre_photos: sanitizeStringArray(data.theatre_photos),
     theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),

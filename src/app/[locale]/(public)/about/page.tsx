@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { createPublicSupabaseClient } from "@/lib/supabase-server";
 import AboutContent from "@/components/sections/AboutContent";
 import type { Locale, SiteConfig } from "@/lib/types";
-import { normalizeTheatreProductions, sanitizeStringArray } from "@/lib/utils";
+import { normalizeTheatreProductions, readPortraitUrl, sanitizeStringArray } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +39,7 @@ export default async function AboutPage({
   const siteConfig: SiteConfig | null = config
     ? {
         ...(config as SiteConfig),
+        portrait_url: readPortraitUrl(config as unknown as Record<string, unknown>),
         theatre_productions: normalizeTheatreProductions(config as SiteConfig),
         theatre_photos: sanitizeStringArray(config.theatre_photos),
         theatre_youtube_ids: sanitizeStringArray(config.theatre_youtube_ids),
