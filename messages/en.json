@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "films": "Films",
+    "videos": "Videos",
+    "photography": "Photography",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "home": {
+    "tagline": "Film Director based in Whitehorse, Yukon, Canada",
+    "viewWork": "View Work",
+    "watchReel": "Watch Reel",
+    "featuredWork": "Featured Work",
+    "seeAll": "See All"
+  },
+  "about": {
+    "title": "About",
+    "downloadCV": "Download CV",
+    "contactMe": "Contact Me"
+  },
+  "contact": {
+    "title": "Contact",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send",
+    "sending": "Sending...",
+    "success": "Thank you — your message has been sent."
+  },
+  "film": {
+    "synopsis": "Synopsis",
+    "role": "Role",
+    "statement": "Director's Statement",
+    "credits": "Credits",
+    "behindTheScenes": "Behind the Scenes",
+    "runtime": "Runtime",
+    "year": "Year",
+    "backToFilms": "Back to Films"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "languageLabel": "Language"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "builtBy": "Designed and built by Alejandro Soza"
+  }
+}

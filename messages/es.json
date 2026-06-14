@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "films": "Películas",
+    "videos": "Videos",
+    "photography": "Fotografía",
+    "about": "Acerca de",
+    "contact": "Contacto"
+  },
+  "home": {
+    "tagline": "Director de cine radicado en Whitehorse, Yukón, Canadá",
+    "viewWork": "Ver Trabajo",
+    "watchReel": "Ver Reel",
+    "featuredWork": "Trabajo Destacado",
+    "seeAll": "Ver Todo"
+  },
+  "about": {
+    "title": "Acerca de",
+    "downloadCV": "Descargar CV",
+    "contactMe": "Contáctame"
+  },
+  "contact": {
+    "title": "Contacto",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "message": "Mensaje",
+    "send": "Enviar",
+    "sending": "Enviando...",
+    "success": "Gracias — tu mensaje ha sido enviado."
+  },
+  "film": {
+    "synopsis": "Sinopsis",
+    "role": "Rol",
+    "statement": "Declaración del Director",
+    "credits": "Créditos",
+    "behindTheScenes": "Detrás de Cámaras",
+    "runtime": "Duración",
+    "year": "Año",
+    "backToFilms": "Volver a Películas"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal.",
+    "languageLabel": "Idioma"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "builtBy": "Diseñado y desarrollado por Alejandro Soza"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "films": "Films",
+    "videos": "Vidéos",
+    "photography": "Photographie",
+    "about": "À propos",
+    "contact": "Contact"
+  },
+  "home": {
+    "tagline": "Réalisateur basé à Whitehorse, au Yukon, Canada",
+    "viewWork": "Voir le travail",
+    "watchReel": "Voir la bande démo",
+    "featuredWork": "Travaux à la une",
+    "seeAll": "Voir tout"
+  },
+  "about": {
+    "title": "À propos",
+    "downloadCV": "Télécharger le CV",
+    "contactMe": "Me contacter"
+  },
+  "contact": {
+    "title": "Contact",
+    "name": "Nom",
+    "email": "Courriel",
+    "message": "Message",
+    "send": "Envoyer",
+    "sending": "Envoi en cours...",
+    "success": "Merci — votre message a été envoyé."
+  },
+  "film": {
+    "synopsis": "Synopsis",
+    "role": "Rôle",
+    "statement": "Note du réalisateur",
+    "credits": "Générique",
+    "behindTheScenes": "Dans les coulisses",
+    "runtime": "Durée",
+    "year": "Année",
+    "backToFilms": "Retour aux films"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue.",
+    "languageLabel": "Langue"
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "builtBy": "Conçu et développé par Alejandro Soza"
+  }
+}
