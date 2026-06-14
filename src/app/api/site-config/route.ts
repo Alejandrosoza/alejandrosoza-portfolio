@@ -11,6 +11,7 @@ function formatSiteConfig(data: Record<string, unknown>) {
   return {
     id: data.id,
     showreel_youtube_id: data.showreel_youtube_id,
+    portrait_url: data.portrait_url ?? "",
     bio_short_en: data.bio_short_en,
     bio_short_es: data.bio_short_es,
     bio_short_fr: data.bio_short_fr,

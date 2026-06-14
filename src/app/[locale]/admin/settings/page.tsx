@@ -41,6 +41,7 @@ function parseLoadedConfig(data: SiteConfig): SiteConfig {
 
   return {
     ...data,
+    portrait_url: data.portrait_url ?? "",
     theatre_productions: theatreProductions,
     theatre_photos: sanitizeStringArray(data.theatre_photos),
     theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
@@ -528,6 +529,12 @@ export default function AdminSettingsPage() {
     }
   };
 
+  const handlePortraitUpload = (results: CloudinaryUploadWidgetResults) => {
+    if (results.info && typeof results.info !== "string") {
+      updateField("portrait_url", results.info.secure_url);
+    }
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!config) return;
@@ -569,6 +576,45 @@ export default function AdminSettingsPage() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+      <div className={sectionClass}>
+        <p className={sectionLabelClass}>Portrait Photo</p>
+        <p className="mb-4 font-body text-type-ui text-film-cream/40">
+          Main photo shown on the About page
+        </p>
+        <div className="flex flex-col gap-2 md:max-w-[480px]">
+          <label className={labelClass}>Portrait URL</label>
+          <input
+            value={config.portrait_url ?? ""}
+            onChange={(event) => updateField("portrait_url", event.target.value)}
+            placeholder="https://res.cloudinary.com/..."
+            className={inputClass}
+          />
+          {config.portrait_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={config.portrait_url}
+              alt="Portrait preview"
+              className="mt-2 aspect-[3/4] w-40 border border-[#2a2a2a] object-cover"
+            />
+          )}
+          <CloudinaryUploadWidget
+            uploadPreset="alejandrosoza_portfolio"
+            options={{ folder: "alejandrosoza/portrait", multiple: false }}
+            onSuccess={handlePortraitUpload}
+          >
+            {({ open }) => (
+              <button
+                type="button"
+                onClick={() => open()}
+                className="mt-2 self-start border border-[#2a2a2a] px-4 py-2 font-body text-type-ui uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold"
+              >
+                Upload Portrait
+              </button>
+            )}
+          </CloudinaryUploadWidget>
+        </div>
+      </div>
+
       <div className={sectionClass}>
         <p className={sectionLabelClass}>Showreel</p>
         <div className="flex flex-col gap-2 md:max-w-[480px]">

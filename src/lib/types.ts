@@ -80,6 +80,7 @@ export interface TheatreProduction {
 export interface SiteConfig {
   id: string;
   showreel_youtube_id: string;
+  portrait_url: string;
   bio_short_en: string;
   bio_short_es: string;
   bio_short_fr: string;

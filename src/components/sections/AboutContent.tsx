@@ -218,11 +218,24 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="lg:w-[45%]"
           >
-            <div className="relative flex aspect-[3/4] items-center justify-center border border-[#2a2a2a] bg-film-gray">
-              <span className="font-body text-type-label uppercase tracking-widest text-film-cream/20">
-                {t("portrait")}
-              </span>
-            </div>
+            {config?.portrait_url ? (
+              <div className="relative aspect-[3/4] overflow-hidden border border-[#2a2a2a] bg-film-gray">
+                <Image
+                  src={getOptimizedImageUrl(config.portrait_url, { width: 900 })}
+                  alt={t("portrait")}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 45vw"
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            ) : (
+              <div className="relative flex aspect-[3/4] items-center justify-center border border-[#2a2a2a] bg-film-gray">
+                <span className="font-body text-type-label uppercase tracking-widest text-film-cream/20">
+                  {t("portrait")}
+                </span>
+              </div>
+            )}
             <p className="mt-3 font-body text-type-label tracking-wider text-film-cream/30">
               Whitehorse, Yukon, Canada
             </p>

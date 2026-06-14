@@ -115,6 +115,7 @@ export function buildSiteConfigPayload(config: SiteConfig) {
   return {
     id: config.id,
     showreel_youtube_id: config.showreel_youtube_id ?? "",
+    portrait_url: config.portrait_url ?? "",
     bio_short_en: config.bio_short_en ?? "",
     bio_short_es: config.bio_short_es ?? "",
     bio_short_fr: config.bio_short_fr ?? "",
