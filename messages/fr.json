@@ -16,16 +16,34 @@
   "about": {
     "title": "À propos",
     "downloadCV": "Télécharger le CV",
-    "contactMe": "Me contacter"
+    "contactMe": "Me contacter",
+    "director": "Réalisateur",
+    "artisticVision": "Vision Artistique",
+    "onStage": "Sur Scène",
+    "theatre": "Théâtre",
+    "beyondFrame": "Au-delà du Cadre",
+    "champion": "Champion",
+    "getInTouch": "Entrer en Contact",
+    "readyCollaborate": "Prêt à collaborer ?",
+    "portrait": "Portrait",
+    "theatrePhoto": "Photographie de Théâtre",
+    "sportsPhoto": "Photographie Sportive"
   },
   "contact": {
     "title": "Contact",
     "name": "Nom",
     "email": "Courriel",
     "message": "Message",
-    "send": "Envoyer",
+    "send": "Envoyer le Message",
     "sending": "Envoi en cours...",
-    "success": "Merci — votre message a été envoyé."
+    "success": "Merci — votre message a été envoyé.",
+    "getInTouch": "Entrer en Contact",
+    "letsTalk": "Discutons",
+    "findMeOn": "Me Retrouver Sur",
+    "location": "Lieu",
+    "subject": "Sujet",
+    "sent": "Message Envoyé",
+    "error": "Erreur — Veuillez réessayer"
   },
   "film": {
     "synopsis": "Synopsis",

@@ -73,10 +73,16 @@ export interface SiteConfig {
   bio_long_en: string;
   bio_long_es: string;
   bio_long_fr: string;
+  theatre_en: string;
+  theatre_es: string;
+  theatre_fr: string;
+  sports_en: string;
+  sports_es: string;
+  sports_fr: string;
   cv_url?: string;
   contact_email: string;
   instagram_url?: string;
-  vimeo_url?: string;
   youtube_channel_url?: string;
   letterboxd_url?: string;
+  imdb_url?: string;
 }

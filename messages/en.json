@@ -16,16 +16,34 @@
   "about": {
     "title": "About",
     "downloadCV": "Download CV",
-    "contactMe": "Contact Me"
+    "contactMe": "Contact Me",
+    "director": "Director",
+    "artisticVision": "Artistic Vision",
+    "onStage": "On Stage",
+    "theatre": "Theatre",
+    "beyondFrame": "Beyond the Frame",
+    "champion": "Champion",
+    "getInTouch": "Get in Touch",
+    "readyCollaborate": "Ready to collaborate?",
+    "portrait": "Portrait",
+    "theatrePhoto": "Theatre Photography",
+    "sportsPhoto": "Sports Photography"
   },
   "contact": {
     "title": "Contact",
     "name": "Name",
     "email": "Email",
     "message": "Message",
-    "send": "Send",
+    "send": "Send Message",
     "sending": "Sending...",
-    "success": "Thank you — your message has been sent."
+    "success": "Thank you — your message has been sent.",
+    "getInTouch": "Get in Touch",
+    "letsTalk": "Let's Talk",
+    "findMeOn": "Find Me On",
+    "location": "Location",
+    "subject": "Subject",
+    "sent": "Message Sent",
+    "error": "Error — Please try again"
   },
   "film": {
     "synopsis": "Synopsis",
