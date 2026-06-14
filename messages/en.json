@@ -47,6 +47,18 @@
     "behindScenes": "Behind the Scenes",
     "fromTheSet": "From the set"
   },
+  "video": {
+    "title": "Videos",
+    "subtitle": "Commercials · Music Videos · Other Work",
+    "noVideos": "No videos yet. Check back soon.",
+    "watchVideo": "Watch Video"
+  },
+  "photography": {
+    "title": "Photography",
+    "visualWork": "Visual Work",
+    "noPhotos": "No photos yet. Check back soon.",
+    "photoCounter": "of"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong.",

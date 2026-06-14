@@ -47,6 +47,18 @@
     "behindScenes": "Detrás de Cámaras",
     "fromTheSet": "Desde el set"
   },
+  "video": {
+    "title": "Videos",
+    "subtitle": "Comerciales · Videoclips · Otros Trabajos",
+    "noVideos": "Aún no hay videos. Vuelve pronto.",
+    "watchVideo": "Ver Video"
+  },
+  "photography": {
+    "title": "Fotografía",
+    "visualWork": "Trabajo Visual",
+    "noPhotos": "Aún no hay fotos. Vuelve pronto.",
+    "photoCounter": "de"
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Algo salió mal.",

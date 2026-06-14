@@ -47,6 +47,18 @@
     "behindScenes": "Dans les coulisses",
     "fromTheSet": "Sur le plateau"
   },
+  "video": {
+    "title": "Vidéos",
+    "subtitle": "Publicités · Clips musicaux · Autres travaux",
+    "noVideos": "Aucune vidéo pour le moment. Revenez bientôt.",
+    "watchVideo": "Regarder la vidéo"
+  },
+  "photography": {
+    "title": "Photographie",
+    "visualWork": "Travail visuel",
+    "noPhotos": "Aucune photo pour le moment. Revenez bientôt.",
+    "photoCounter": "sur"
+  },
   "common": {
     "loading": "Chargement...",
     "error": "Une erreur est survenue.",

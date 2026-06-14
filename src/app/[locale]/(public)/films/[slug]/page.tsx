@@ -5,7 +5,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
-import { getCloudinaryUrl } from "@/lib/cloudinary";
+import { getCloudinaryUrl } from "@/lib/cloudinary-url";
 import { localized } from "@/lib/utils";
 import { FILM_CATEGORIES } from "@/lib/constants";
 import YouTubeEmbed from "@/components/ui/YouTubeEmbed";
