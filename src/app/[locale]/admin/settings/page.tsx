@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import Image from "next/image";
 import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import CloudinaryUploadWidget from "@/components/admin/CloudinaryUploadWidget";
-import { extractYouTubeId, getYouTubeThumbnail } from "@/lib/utils";
+import { buildSiteConfigPayload, extractYouTubeId, getYouTubeThumbnail, sanitizeStringArray } from "@/lib/utils";
 import type { SiteConfig } from "@/lib/types";
 
 type Tab = "en" | "es" | "fr";
@@ -45,34 +45,52 @@ function PhotoListField({
       <label className={labelClass}>{label}</label>
       {photos.map((url, index) => (
         <div key={index} className="flex items-center gap-3">
-          <input
-            value={url}
-            onChange={(event) => updateAt(index, event.target.value)}
-            placeholder="https://res.cloudinary.com/..."
-            className={`${inputClass} flex-1`}
-          />
-          {url && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={url} alt="" className="h-16 w-16 object-cover" />
-          )}
-          <CloudinaryUploadWidget
-            uploadPreset="alejandrosoza_portfolio"
-            options={{ folder }}
-            onSuccess={(results) => {
-              if (results.info && typeof results.info !== "string") {
-                updateAt(index, results.info.secure_url);
-              }
-            }}
-          >
-            {({ open }) => (
-              <button type="button" onClick={() => open()} className={uploadButtonClass}>
-                Upload
+          {url ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={url} alt="" className="h-16 w-16 shrink-0 object-cover" />
+              <input
+                value={url}
+                readOnly
+                className={`${inputClass} flex-1 text-film-cream/60`}
+              />
+              <span className="shrink-0 font-body text-type-ui text-film-gold">Uploaded ✓</span>
+              <button
+                type="button"
+                onClick={() => removeAt(index)}
+                className="shrink-0 font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/50 transition-colors duration-300 hover:text-red-400"
+              >
+                × Remove
               </button>
-            )}
-          </CloudinaryUploadWidget>
-          <button type="button" onClick={() => removeAt(index)} className={removeButtonClass}>
-            ×
-          </button>
+            </>
+          ) : (
+            <>
+              <input
+                value={url}
+                onChange={(event) => updateAt(index, event.target.value)}
+                placeholder="https://res.cloudinary.com/..."
+                className={`${inputClass} flex-1`}
+              />
+              <CloudinaryUploadWidget
+                uploadPreset="alejandrosoza_portfolio"
+                options={{ folder }}
+                onSuccess={(results) => {
+                  if (results.info && typeof results.info !== "string") {
+                    updateAt(index, results.info.secure_url);
+                  }
+                }}
+              >
+                {({ open }) => (
+                  <button type="button" onClick={() => open()} className={uploadButtonClass}>
+                    Upload
+                  </button>
+                )}
+              </CloudinaryUploadWidget>
+              <button type="button" onClick={() => removeAt(index)} className={removeButtonClass}>
+                ×
+              </button>
+            </>
+          )}
         </div>
       ))}
       <button type="button" onClick={() => onChange([...photos, ""])} className={`self-start ${uploadButtonClass}`}>
@@ -146,7 +164,13 @@ export default function AdminSettingsPage() {
         if (!response.ok || !data.id) {
           throw new Error(data.error || "Failed to load settings");
         }
-        setConfig(data);
+        setConfig({
+          ...data,
+          theatre_photos: sanitizeStringArray(data.theatre_photos),
+          theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
+          sports_photos: sanitizeStringArray(data.sports_photos),
+          sports_youtube_ids: sanitizeStringArray(data.sports_youtube_ids),
+        });
       })
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
@@ -175,17 +199,28 @@ export default function AdminSettingsPage() {
     setSaved(false);
     setError(null);
 
+    const payload = buildSiteConfigPayload(config);
+    console.log("SAVE SETTINGS payload:", payload);
+    console.log("theatre_photos:", payload.theatre_photos);
+    console.log("sports_photos:", payload.sports_photos);
+
     const response = await fetch("/api/site-config", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(config),
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
     setSaving(false);
 
     if (response.ok) {
-      setConfig(data);
+      setConfig({
+        ...data,
+        theatre_photos: sanitizeStringArray(data.theatre_photos),
+        theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
+        sports_photos: sanitizeStringArray(data.sports_photos),
+        sports_youtube_ids: sanitizeStringArray(data.sports_youtube_ids),
+      });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } else {

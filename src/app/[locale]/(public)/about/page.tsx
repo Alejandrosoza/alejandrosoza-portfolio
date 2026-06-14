@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createPublicSupabaseClient } from "@/lib/supabase-server";
 import AboutContent from "@/components/sections/AboutContent";
 import type { Locale, SiteConfig } from "@/lib/types";
+import { sanitizeStringArray } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 
 const descriptions: Record<Locale, string> = {
   en: "Learn about Alejandro Soza — a film director based in Whitehorse, Yukon, Canada, with a background in theatre and competitive table tennis.",
@@ -29,9 +32,19 @@ export default async function AboutPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
 
-  const { data: config } = await supabase.from("site_config").select("*").single();
+  const { data: config } = await supabase.from("site_config").select("*").maybeSingle();
 
-  return <AboutContent config={config as SiteConfig | null} locale={locale as Locale} />;
+  const siteConfig: SiteConfig | null = config
+    ? {
+        ...(config as SiteConfig),
+        theatre_photos: sanitizeStringArray(config.theatre_photos),
+        theatre_youtube_ids: sanitizeStringArray(config.theatre_youtube_ids),
+        sports_photos: sanitizeStringArray(config.sports_photos),
+        sports_youtube_ids: sanitizeStringArray(config.sports_youtube_ids),
+      }
+    : null;
+
+  return <AboutContent config={siteConfig} locale={locale as Locale} />;
 }

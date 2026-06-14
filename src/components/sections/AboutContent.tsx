@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -9,7 +9,7 @@ import { Download } from "lucide-react";
 import PhotoLightbox from "@/components/ui/PhotoLightbox";
 import YouTubeEmbed from "@/components/ui/YouTubeEmbed";
 import { getOptimizedImageUrl } from "@/lib/cloudinary-url";
-import { localized } from "@/lib/utils";
+import { localized, sanitizeStringArray } from "@/lib/utils";
 import type { Locale, Photo, SiteConfig } from "@/lib/types";
 
 const PLACEHOLDERS: Record<"bioLong" | "bioShort" | "theatre" | "sports", Record<Locale, string>> = {
@@ -115,8 +115,22 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
   const bioShort = (config && localized(config, "bio_short", locale)) || PLACEHOLDERS.bioShort[locale];
   const theatre = (config && localized(config, "theatre", locale)) || PLACEHOLDERS.theatre[locale];
   const sports = (config && localized(config, "sports", locale)) || PLACEHOLDERS.sports[locale];
-  const theatrePhoto = config?.theatre_photos?.[0];
-  const sportsPhoto = config?.sports_photos?.[0];
+  const theatrePhotos = sanitizeStringArray(config?.theatre_photos);
+  const sportsPhotos = sanitizeStringArray(config?.sports_photos);
+  const theatreYoutubeIds = sanitizeStringArray(config?.theatre_youtube_ids);
+  const sportsYoutubeIds = sanitizeStringArray(config?.sports_youtube_ids);
+  const theatrePhoto = theatrePhotos[0];
+  const sportsPhoto = sportsPhotos[0];
+
+  useEffect(() => {
+    console.log("AboutContent gallery data:", {
+      theatre_photos: theatrePhotos,
+      sports_photos: sportsPhotos,
+      theatre_youtube_ids: theatreYoutubeIds,
+      sports_youtube_ids: sportsYoutubeIds,
+      raw_config: config,
+    });
+  }, [config, theatrePhotos, sportsPhotos, theatreYoutubeIds, sportsYoutubeIds]);
 
   return (
     <div>
@@ -217,8 +231,8 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
         </div>
 
         <MediaGallery
-          photos={theatrePhoto ? (config?.theatre_photos ?? []).slice(1) : (config?.theatre_photos ?? [])}
-          youtubeIds={config?.theatre_youtube_ids ?? []}
+          photos={theatrePhoto ? theatrePhotos.slice(1) : theatrePhotos}
+          youtubeIds={theatreYoutubeIds}
           videoLabel={t("theatreVideo")}
           idPrefix="theatre"
           locale={locale}
@@ -261,8 +275,8 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
 
         <div className="container-film">
           <MediaGallery
-            photos={sportsPhoto ? (config?.sports_photos ?? []).slice(1) : (config?.sports_photos ?? [])}
-            youtubeIds={config?.sports_youtube_ids ?? []}
+            photos={sportsPhoto ? sportsPhotos.slice(1) : sportsPhotos}
+            youtubeIds={sportsYoutubeIds}
             videoLabel={t("sportsVideo")}
             idPrefix="sports"
             locale={locale}

@@ -1,4 +1,44 @@
-import type { Locale } from "./types";
+import type { Locale, SiteConfig } from "./types";
+
+/**
+ * Normalizes gallery array fields from API/DB into a clean string array.
+ */
+export function sanitizeStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => String(item).trim()).filter(Boolean);
+}
+
+/**
+ * Builds an explicit site_config update payload with sanitized gallery arrays.
+ */
+export function buildSiteConfigPayload(config: SiteConfig) {
+  return {
+    id: config.id,
+    showreel_youtube_id: config.showreel_youtube_id ?? "",
+    bio_short_en: config.bio_short_en ?? "",
+    bio_short_es: config.bio_short_es ?? "",
+    bio_short_fr: config.bio_short_fr ?? "",
+    bio_long_en: config.bio_long_en ?? "",
+    bio_long_es: config.bio_long_es ?? "",
+    bio_long_fr: config.bio_long_fr ?? "",
+    theatre_en: config.theatre_en ?? "",
+    theatre_es: config.theatre_es ?? "",
+    theatre_fr: config.theatre_fr ?? "",
+    sports_en: config.sports_en ?? "",
+    sports_es: config.sports_es ?? "",
+    sports_fr: config.sports_fr ?? "",
+    theatre_photos: sanitizeStringArray(config.theatre_photos),
+    theatre_youtube_ids: sanitizeStringArray(config.theatre_youtube_ids),
+    sports_photos: sanitizeStringArray(config.sports_photos),
+    sports_youtube_ids: sanitizeStringArray(config.sports_youtube_ids),
+    cv_url: config.cv_url ?? "",
+    contact_email: config.contact_email ?? "",
+    instagram_url: config.instagram_url ?? "",
+    youtube_channel_url: config.youtube_channel_url ?? "",
+    letterboxd_url: config.letterboxd_url ?? "",
+    imdb_url: config.imdb_url ?? "",
+  };
+}
 
 /**
  * Returns a localized field value (e.g. `title_en`/`title_es`/`title_fr`)

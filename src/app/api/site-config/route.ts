@@ -2,6 +2,7 @@ import {
   createPublicSupabaseClient,
   requireAuthenticatedSupabaseClient,
 } from "@/lib/supabase-server";
+import { buildSiteConfigPayload, sanitizeStringArray } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
 function formatSiteConfig(data: Record<string, unknown>) {
@@ -20,10 +21,10 @@ function formatSiteConfig(data: Record<string, unknown>) {
     sports_en: data.sports_en,
     sports_es: data.sports_es,
     sports_fr: data.sports_fr,
-    theatre_photos: data.theatre_photos ?? [],
-    theatre_youtube_ids: data.theatre_youtube_ids ?? [],
-    sports_photos: data.sports_photos ?? [],
-    sports_youtube_ids: data.sports_youtube_ids ?? [],
+    theatre_photos: sanitizeStringArray(data.theatre_photos),
+    theatre_youtube_ids: sanitizeStringArray(data.theatre_youtube_ids),
+    sports_photos: sanitizeStringArray(data.sports_photos),
+    sports_youtube_ids: sanitizeStringArray(data.sports_youtube_ids),
     cv_url: data.cv_url,
     contact_email: data.contact_email,
     instagram_url: data.instagram_url,
@@ -55,16 +56,13 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { id, ...rest } = body;
-    delete rest.theatre_photo_url;
-    delete rest.sports_photo_url;
-    delete rest.created_at;
-    delete rest.updated_at;
-    const updates = rest;
 
-    if (!id) {
+    if (!body.id) {
       return NextResponse.json({ error: "Missing site config id" }, { status: 400 });
     }
+
+    const payload = buildSiteConfigPayload(body);
+    const { id, ...updates } = payload;
 
     const { data, error } = await supabase
       .from("site_config")
