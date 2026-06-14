@@ -81,6 +81,10 @@ export interface SiteConfig {
   sports_fr: string;
   theatre_photo_url: string;
   sports_photo_url: string;
+  theatre_photos: string[];
+  theatre_youtube_ids: string[];
+  sports_photos: string[];
+  sports_youtube_ids: string[];
   cv_url?: string;
   contact_email: string;
   instagram_url?: string;

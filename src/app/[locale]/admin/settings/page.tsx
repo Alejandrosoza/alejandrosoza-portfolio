@@ -19,6 +19,119 @@ const inputClass =
 const labelClass = "font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
 const sectionLabelClass = "mb-4 font-body text-[9px] uppercase tracking-[0.3em] text-film-cream/30";
 const sectionClass = "border border-[#2a2a2a] p-6";
+const uploadButtonClass =
+  "border border-[#2a2a2a] px-4 py-2 font-body text-[10px] uppercase tracking-[0.3em] text-film-cream/60 transition-colors duration-300 hover:border-film-gold hover:text-film-gold";
+const removeButtonClass =
+  "font-body text-lg text-film-cream/30 transition-colors duration-300 hover:text-red-400";
+
+function PhotoListField({
+  label,
+  photos,
+  folder,
+  onChange,
+}: {
+  label: string;
+  photos: string[];
+  folder: string;
+  onChange: (photos: string[]) => void;
+}) {
+  const updateAt = (index: number, value: string) => {
+    onChange(photos.map((url, i) => (i === index ? value : url)));
+  };
+  const removeAt = (index: number) => {
+    onChange(photos.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <label className={labelClass}>{label}</label>
+      {photos.map((url, index) => (
+        <div key={index} className="flex items-center gap-3">
+          <input
+            value={url}
+            onChange={(event) => updateAt(index, event.target.value)}
+            placeholder="https://res.cloudinary.com/..."
+            className={`${inputClass} flex-1`}
+          />
+          {url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={url} alt="" className="h-16 w-16 object-cover" />
+          )}
+          <CloudinaryUploadWidget
+            uploadPreset="alejandrosoza_portfolio"
+            options={{ folder }}
+            onSuccess={(results) => {
+              if (results.info && typeof results.info !== "string") {
+                updateAt(index, results.info.secure_url);
+              }
+            }}
+          >
+            {({ open }) => (
+              <button type="button" onClick={() => open()} className={uploadButtonClass}>
+                Upload
+              </button>
+            )}
+          </CloudinaryUploadWidget>
+          <button type="button" onClick={() => removeAt(index)} className={removeButtonClass}>
+            ×
+          </button>
+        </div>
+      ))}
+      <button type="button" onClick={() => onChange([...photos, ""])} className={`self-start ${uploadButtonClass}`}>
+        Add Photo
+      </button>
+    </div>
+  );
+}
+
+function YoutubeListField({
+  label,
+  ids,
+  onChange,
+}: {
+  label: string;
+  ids: string[];
+  onChange: (ids: string[]) => void;
+}) {
+  const updateAt = (index: number, value: string) => {
+    onChange(ids.map((id, i) => (i === index ? value : id)));
+  };
+  const removeAt = (index: number) => {
+    onChange(ids.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <label className={labelClass}>{label}</label>
+      {ids.map((id, index) => (
+        <div key={index} className="flex items-center gap-3">
+          <input
+            value={id}
+            onChange={(event) => updateAt(index, event.target.value)}
+            onBlur={() => updateAt(index, extractYouTubeId(id))}
+            placeholder="YouTube ID or URL"
+            className={`${inputClass} flex-1`}
+          />
+          {id && (
+            <Image
+              src={getYouTubeThumbnail(id, "hq")}
+              alt="Video thumbnail preview"
+              width={80}
+              height={45}
+              className="h-[45px] w-20 object-cover"
+            />
+          )}
+          <button type="button" onClick={() => removeAt(index)} className={removeButtonClass}>
+            ×
+          </button>
+        </div>
+      ))}
+      <button type="button" onClick={() => onChange([...ids, ""])} className={`self-start ${uploadButtonClass}`}>
+        Add Video
+      </button>
+    </div>
+  );
+}
 
 export default function AdminSettingsPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -253,6 +366,40 @@ export default function AdminSettingsPage() {
               )}
             </CloudinaryUploadWidget>
           </div>
+        </div>
+      </div>
+
+      <div className={sectionClass}>
+        <p className={sectionLabelClass}>Theatre Gallery</p>
+        <div className="flex flex-col gap-8">
+          <PhotoListField
+            label="Theatre Photos"
+            photos={config.theatre_photos}
+            folder="alejandrosoza/theatre"
+            onChange={(photos) => updateField("theatre_photos", photos)}
+          />
+          <YoutubeListField
+            label="Theatre YouTube Videos"
+            ids={config.theatre_youtube_ids}
+            onChange={(ids) => updateField("theatre_youtube_ids", ids)}
+          />
+        </div>
+      </div>
+
+      <div className={sectionClass}>
+        <p className={sectionLabelClass}>Sports Gallery</p>
+        <div className="flex flex-col gap-8">
+          <PhotoListField
+            label="Sports Photos"
+            photos={config.sports_photos}
+            folder="alejandrosoza/sports"
+            onChange={(photos) => updateField("sports_photos", photos)}
+          />
+          <YoutubeListField
+            label="Sports YouTube Videos"
+            ids={config.sports_youtube_ids}
+            onChange={(ids) => updateField("sports_youtube_ids", ids)}
+          />
         </div>
       </div>
 

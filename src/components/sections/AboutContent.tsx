@@ -1,12 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Download } from "lucide-react";
+import PhotoLightbox from "@/components/ui/PhotoLightbox";
+import YouTubeEmbed from "@/components/ui/YouTubeEmbed";
+import { getOptimizedImageUrl } from "@/lib/cloudinary-url";
 import { localized } from "@/lib/utils";
-import type { Locale, SiteConfig } from "@/lib/types";
+import type { Locale, Photo, SiteConfig } from "@/lib/types";
 
 const PLACEHOLDERS: Record<"bioLong" | "bioShort" | "theatre" | "sports", Record<Locale, string>> = {
   bioLong: {
@@ -30,6 +34,74 @@ const PLACEHOLDERS: Record<"bioLong" | "bioShort" | "theatre" | "sports", Record
     fr: "Champion territorial de tennis de table au niveau du Territoire du Yukon, Alejandro apporte la même discipline, précision et concentration compétitive à sa pratique cinématographique. La clarté mentale nécessaire pour concourir à un niveau de championnat se traduit directement par la patience et la détermination exigées derrière la caméra.",
   },
 };
+
+interface MediaGalleryProps {
+  photos: string[];
+  youtubeIds: string[];
+  videoLabel: string;
+  idPrefix: string;
+  locale: Locale;
+}
+
+function MediaGallery({ photos, youtubeIds, videoLabel, idPrefix, locale }: MediaGalleryProps) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  if (photos.length === 0 && youtubeIds.length === 0) return null;
+
+  const lightboxPhotos: Photo[] = photos.map((url, index) => ({
+    id: `${idPrefix}-${index}`,
+    title_en: "",
+    title_es: "",
+    title_fr: "",
+    url,
+    order_index: index,
+    created_at: "",
+  }));
+
+  return (
+    <div className="mt-12">
+      {photos.length > 0 && (
+        <div className="grid grid-cols-2 gap-[2px] md:grid-cols-3">
+          {photos.map((url, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => setActiveIndex(index)}
+              className="group relative aspect-[4/3] overflow-hidden"
+            >
+              <Image
+                src={getOptimizedImageUrl(url, { width: 600 })}
+                alt=""
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/30" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {youtubeIds.length > 0 && (
+        <div className={`grid grid-cols-1 gap-1 md:grid-cols-2 ${photos.length > 0 ? "mt-4" : ""}`}>
+          {youtubeIds.map((id) => (
+            <div key={id}>
+              <YouTubeEmbed youtubeId={id} title={videoLabel} />
+              <p className="mt-2 font-body text-[9px] text-film-cream/30">{videoLabel}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <PhotoLightbox
+        photos={lightboxPhotos}
+        initialIndex={activeIndex ?? 0}
+        isOpen={activeIndex !== null}
+        onClose={() => setActiveIndex(null)}
+        locale={locale}
+      />
+    </div>
+  );
+}
 
 interface AboutContentProps {
   config: SiteConfig | null;
@@ -141,6 +213,14 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
             )}
           </div>
         </div>
+
+        <MediaGallery
+          photos={config?.theatre_photos ?? []}
+          youtubeIds={config?.theatre_youtube_ids ?? []}
+          videoLabel={t("theatreVideo")}
+          idPrefix="theatre"
+          locale={locale}
+        />
       </section>
 
       {/* Section D — Beyond the Frame */}
@@ -175,6 +255,16 @@ export default function AboutContent({ config, locale }: AboutContentProps) {
             <div className="my-6 h-px w-[60px] bg-film-gold" />
             <p className="font-body text-sm leading-[1.8] text-film-cream/60">{sports}</p>
           </div>
+        </div>
+
+        <div className="container-film">
+          <MediaGallery
+            photos={config?.sports_photos ?? []}
+            youtubeIds={config?.sports_youtube_ids ?? []}
+            videoLabel={t("sportsVideo")}
+            idPrefix="sports"
+            locale={locale}
+          />
         </div>
       </section>
 

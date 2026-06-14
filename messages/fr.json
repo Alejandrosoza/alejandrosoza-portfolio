@@ -27,7 +27,9 @@
     "readyCollaborate": "Prêt à collaborer ?",
     "portrait": "Portrait",
     "theatrePhoto": "Photographie de Théâtre",
-    "sportsPhoto": "Photographie Sportive"
+    "sportsPhoto": "Photographie Sportive",
+    "theatreVideo": "Production Shakespearienne",
+    "sportsVideo": "Championnat de Tennis de Table"
   },
   "contact": {
     "title": "Contact",
