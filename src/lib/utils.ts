@@ -1,11 +1,37 @@
 import type { Locale, SiteConfig } from "./types";
 
 /**
- * Normalizes gallery array fields from API/DB into a clean string array.
+ * Normalizes gallery array fields: trim, drop empty, dedupe (preserve order).
  */
 export function sanitizeStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
-  return value.map((item) => String(item).trim()).filter(Boolean);
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const item of value) {
+    const trimmed = String(item).trim();
+    if (!trimmed || seen.has(trimmed)) continue;
+    seen.add(trimmed);
+    result.push(trimmed);
+  }
+  return result;
+}
+
+/** Returns only photo URLs that respond with HTTP 2xx. */
+export async function filterReachablePhotoUrls(urls: string[]): Promise<string[]> {
+  const checks = await Promise.all(
+    urls.map(async (url) => {
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          signal: AbortSignal.timeout(8000),
+        });
+        return response.ok ? url : null;
+      } catch {
+        return null;
+      }
+    })
+  );
+  return checks.filter((url): url is string => url !== null);
 }
 
 /**

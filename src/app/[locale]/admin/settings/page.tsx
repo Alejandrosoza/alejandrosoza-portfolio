@@ -255,8 +255,26 @@ export default function AdminSettingsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/site-config")
-      .then(async (response) => {
+    async function loadConfig() {
+      try {
+        const cleanupResponse = await fetch("/api/site-config/cleanup", { method: "POST" });
+        const cleanupData = await cleanupResponse.json();
+
+        if (cleanupResponse.ok && cleanupData.config?.id) {
+          if (cleanupData.changed) {
+            console.log("Gallery cleanup removed broken URLs:", cleanupData.removed);
+          }
+          setConfig({
+            ...cleanupData.config,
+            theatre_photos: sanitizeStringArray(cleanupData.config.theatre_photos),
+            theatre_youtube_ids: sanitizeStringArray(cleanupData.config.theatre_youtube_ids),
+            sports_photos: sanitizeStringArray(cleanupData.config.sports_photos),
+            sports_youtube_ids: sanitizeStringArray(cleanupData.config.sports_youtube_ids),
+          });
+          return;
+        }
+
+        const response = await fetch("/api/site-config");
         const data = await response.json();
         if (!response.ok || !data.id) {
           throw new Error(data.error || "Failed to load settings");
@@ -268,9 +286,14 @@ export default function AdminSettingsPage() {
           sports_photos: sanitizeStringArray(data.sports_photos),
           sports_youtube_ids: sanitizeStringArray(data.sports_youtube_ids),
         });
-      })
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoading(false));
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load settings");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadConfig();
   }, []);
 
   const updateField = <K extends keyof SiteConfig>(field: K, value: SiteConfig[K]) => {
