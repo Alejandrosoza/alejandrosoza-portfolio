@@ -10,7 +10,7 @@ const CldUploadWidget = dynamic(
 
 interface CloudinaryUploadWidgetProps {
   uploadPreset: string;
-  options?: { folder?: string };
+  options?: { folder?: string; multiple?: boolean };
   onSuccess: (results: CloudinaryUploadWidgetResults) => void;
   children: (props: { open: () => void }) => React.ReactNode;
 }

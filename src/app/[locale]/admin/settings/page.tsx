@@ -22,80 +22,132 @@ const uploadButtonClass = "film-btn-ui";
 const removeButtonClass =
   "font-body text-lg text-film-cream/30 transition-colors duration-300 hover:text-red-400";
 
+function PhotoThumbnail({ url }: { url: string }) {
+  const [broken, setBroken] = useState(false);
+
+  if (broken) {
+    return (
+      <div className="flex h-16 w-16 shrink-0 items-center justify-center border border-red-400/30 bg-film-gray px-1 text-center font-body text-[10px] text-film-cream/40">
+        Unavailable
+      </div>
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={url}
+      alt=""
+      onError={() => setBroken(true)}
+      className="h-16 w-16 shrink-0 object-cover"
+    />
+  );
+}
+
 function PhotoListField({
   label,
   photos,
   folder,
   onChange,
+  onAppend,
 }: {
   label: string;
   photos: string[];
   folder: string;
   onChange: (photos: string[]) => void;
+  onAppend: (url: string) => void;
 }) {
+  const extractUploadUrl = (results: CloudinaryUploadWidgetResults): string | null => {
+    if (results.info && typeof results.info === "object" && "secure_url" in results.info) {
+      return (results.info as { secure_url: string }).secure_url;
+    }
+    return null;
+  };
+
   const updateAt = (index: number, value: string) => {
     onChange(photos.map((url, i) => (i === index ? value : url)));
   };
+
   const removeAt = (index: number) => {
     onChange(photos.filter((_, i) => i !== index));
+  };
+
+  const handleBulkUploadSuccess = (results: CloudinaryUploadWidgetResults) => {
+    const url = extractUploadUrl(results);
+    if (url) onAppend(url);
+  };
+
+  const handleSlotUploadSuccess = (index: number, results: CloudinaryUploadWidgetResults) => {
+    const url = extractUploadUrl(results);
+    if (!url) return;
+    onAppend(url);
+    removeAt(index);
   };
 
   return (
     <div className="flex flex-col gap-3">
       <label className={labelClass}>{label}</label>
-      {photos.map((url, index) => (
-        <div key={index} className="flex items-center gap-3">
-          {url ? (
-            <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={url} alt="" className="h-16 w-16 shrink-0 object-cover" />
-              <input
-                value={url}
-                readOnly
-                className={`${inputClass} flex-1 text-film-cream/60`}
-              />
-              <span className="shrink-0 font-body text-type-ui text-film-gold">Uploaded ✓</span>
-              <button
-                type="button"
-                onClick={() => removeAt(index)}
-                className="shrink-0 font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/50 transition-colors duration-300 hover:text-red-400"
-              >
-                × Remove
-              </button>
-            </>
-          ) : (
-            <>
-              <input
-                value={url}
-                onChange={(event) => updateAt(index, event.target.value)}
-                placeholder="https://res.cloudinary.com/..."
-                className={`${inputClass} flex-1`}
-              />
-              <CloudinaryUploadWidget
-                uploadPreset="alejandrosoza_portfolio"
-                options={{ folder }}
-                onSuccess={(results) => {
-                  if (results.info && typeof results.info !== "string") {
-                    updateAt(index, results.info.secure_url);
-                  }
-                }}
-              >
-                {({ open }) => (
-                  <button type="button" onClick={() => open()} className={uploadButtonClass}>
-                    Upload
-                  </button>
-                )}
-              </CloudinaryUploadWidget>
-              <button type="button" onClick={() => removeAt(index)} className={removeButtonClass}>
-                ×
-              </button>
-            </>
+
+      {photos.map((url, index) =>
+        url.trim() ? (
+          <div key={`photo-${index}-${url}`} className="flex items-center gap-3">
+            <PhotoThumbnail url={url} />
+            <input value={url} readOnly className={`${inputClass} flex-1 text-film-cream/60`} />
+            <span className="shrink-0 font-body text-type-ui text-film-gold">Uploaded ✓</span>
+            <button
+              type="button"
+              onClick={() => removeAt(index)}
+              className="shrink-0 font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/50 transition-colors duration-300 hover:text-red-400"
+            >
+              × Remove
+            </button>
+          </div>
+        ) : (
+          <div key={`draft-${index}`} className="flex items-center gap-3">
+            <input
+              value={url}
+              onChange={(event) => updateAt(index, event.target.value)}
+              placeholder="https://res.cloudinary.com/..."
+              className={`${inputClass} flex-1`}
+            />
+            <CloudinaryUploadWidget
+              uploadPreset="alejandrosoza_portfolio"
+              options={{ folder }}
+              onSuccess={(results) => handleSlotUploadSuccess(index, results)}
+            >
+              {({ open }) => (
+                <button type="button" onClick={() => open()} className={uploadButtonClass}>
+                  Upload
+                </button>
+              )}
+            </CloudinaryUploadWidget>
+            <button type="button" onClick={() => removeAt(index)} className={removeButtonClass}>
+              ×
+            </button>
+          </div>
+        )
+      )}
+
+      <div className="flex flex-wrap gap-3">
+        <CloudinaryUploadWidget
+          uploadPreset="alejandrosoza_portfolio"
+          options={{ folder, multiple: true }}
+          onSuccess={handleBulkUploadSuccess}
+        >
+          {({ open }) => (
+            <button type="button" onClick={() => open()} className={uploadButtonClass}>
+              Upload Photos
+            </button>
           )}
-        </div>
-      ))}
-      <button type="button" onClick={() => onChange([...photos, ""])} className={`self-start ${uploadButtonClass}`}>
-        Add Photo
-      </button>
+        </CloudinaryUploadWidget>
+        <button
+          type="button"
+          onClick={() => onChange([...photos, ""])}
+          className={uploadButtonClass}
+        >
+          Add Photo
+        </button>
+      </div>
     </div>
   );
 }
@@ -178,6 +230,17 @@ export default function AdminSettingsPage() {
 
   const updateField = <K extends keyof SiteConfig>(field: K, value: SiteConfig[K]) => {
     setConfig((prev) => (prev ? { ...prev, [field]: value } : prev));
+  };
+
+  const appendGalleryPhoto = (field: "theatre_photos" | "sports_photos", url: string) => {
+    setConfig((prev) =>
+      prev
+        ? {
+            ...prev,
+            [field]: [...sanitizeStringArray(prev[field]), url],
+          }
+        : prev
+    );
   };
 
   const handleShowreelBlur = () => {
@@ -346,6 +409,7 @@ export default function AdminSettingsPage() {
             photos={config.theatre_photos ?? []}
             folder="alejandrosoza/theatre"
             onChange={(photos) => updateField("theatre_photos", photos)}
+            onAppend={(url) => appendGalleryPhoto("theatre_photos", url)}
           />
           <YoutubeListField
             label="Theatre YouTube Videos"
@@ -363,6 +427,7 @@ export default function AdminSettingsPage() {
             photos={config.sports_photos ?? []}
             folder="alejandrosoza/sports"
             onChange={(photos) => updateField("sports_photos", photos)}
+            onAppend={(url) => appendGalleryPhoto("sports_photos", url)}
           />
           <YoutubeListField
             label="Sports YouTube Videos"
