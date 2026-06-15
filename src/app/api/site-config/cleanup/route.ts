@@ -113,7 +113,9 @@ export async function POST() {
       removed,
       changed: true,
     });
-  } catch {
-    return NextResponse.json({ error: "Failed to clean gallery" }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("site-config cleanup error:", message);
+    return NextResponse.json({ error: `Failed to clean gallery: ${message}` }, { status: 500 });
   }
 }

@@ -472,23 +472,22 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     async function loadConfig() {
       try {
-        const cleanupResponse = await fetch("/api/site-config/cleanup", { method: "POST" });
-        const cleanupData = await cleanupResponse.json();
-
-        if (cleanupResponse.ok && cleanupData.config?.id) {
-          if (cleanupData.changed) {
-            console.log("Gallery cleanup removed broken URLs:", cleanupData.removed);
-          }
-          setConfig(parseLoadedConfig(cleanupData.config));
-          return;
-        }
-
         const response = await fetch("/api/site-config");
         const data = await response.json();
         if (!response.ok || !data.id) {
           throw new Error(data.error || "Failed to load settings");
         }
         setConfig(parseLoadedConfig(data));
+
+        // Refresh after optional gallery cleanup (non-blocking).
+        fetch("/api/site-config/cleanup", { method: "POST" })
+          .then(async (cleanupResponse) => {
+            const cleanupData = await cleanupResponse.json();
+            if (cleanupResponse.ok && cleanupData.config?.id) {
+              setConfig(parseLoadedConfig(cleanupData.config));
+            }
+          })
+          .catch(() => {});
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load settings");
       } finally {

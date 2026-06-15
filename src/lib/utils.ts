@@ -113,10 +113,9 @@ export function readPortraitUrl(data: Record<string, unknown> | null | undefined
   return String(data.theatre_photo_url ?? "").trim();
 }
 
-/** DB columns used to persist portrait_url (theatre_photo_url exists before migration 005). */
+/** DB column used to persist portrait until migration 005 adds portrait_url. */
 export function portraitUrlDbUpdates(portraitUrl: string) {
-  const url = portraitUrl ?? "";
-  return { theatre_photo_url: url, portrait_url: url };
+  return { theatre_photo_url: portraitUrl ?? "" };
 }
 
 /**

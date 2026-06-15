@@ -47,8 +47,10 @@ export async function GET() {
       return NextResponse.json({ error: "Site config not found" }, { status: 404 });
     }
     return NextResponse.json(formatSiteConfig(data));
-  } catch {
-    return NextResponse.json({ error: "Failed to fetch site config" }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("site-config GET error:", message);
+    return NextResponse.json({ error: `Failed to fetch site config: ${message}` }, { status: 500 });
   }
 }
 
@@ -68,23 +70,12 @@ export async function PUT(request: Request) {
     const payload = buildSiteConfigPayload(body);
     const { id, ...updates } = payload;
 
-    let { data, error } = await supabase
+    const { data, error } = await supabase
       .from("site_config")
       .update(updates)
       .eq("id", id)
       .select()
       .single();
-
-    // portrait_url column may not exist until migration 005 — retry without it.
-    if (error?.message?.includes("portrait_url")) {
-      const { portrait_url: _removed, ...fallbackUpdates } = updates as Record<string, unknown>;
-      ({ data, error } = await supabase
-        .from("site_config")
-        .update(fallbackUpdates)
-        .eq("id", id)
-        .select()
-        .single());
-    }
 
     if (error) {
       console.error("site-config PUT error:", error.message);
@@ -93,6 +84,11 @@ export async function PUT(request: Request) {
         { status: 500 }
       );
     }
+
+    if (!data) {
+      return NextResponse.json({ error: "Site config not found after update" }, { status: 500 });
+    }
+
     return NextResponse.json(formatSiteConfig(data));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
