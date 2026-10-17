@@ -97,7 +97,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${cormorant.variable} ${inter.variable}`}>
       <body>
-        <JsonLd data={personSchema()} />
+        <JsonLd id="json-ld-person" data={personSchema()} />
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
