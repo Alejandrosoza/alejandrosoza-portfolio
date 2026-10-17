@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import FilmsGrid from "@/components/sections/FilmsGrid";
-import YouTubeApiPreload from "@/components/ui/YouTubeApiPreload";
 import type { Film, Locale } from "@/lib/types";
 
 const pageTitles: Record<Locale, string> = {
@@ -45,7 +44,6 @@ export default async function FilmsPage({
 
   return (
     <div className="min-h-screen">
-      <YouTubeApiPreload />
       <div className="container-film pb-20 pt-40">
         <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
           Portfolio
