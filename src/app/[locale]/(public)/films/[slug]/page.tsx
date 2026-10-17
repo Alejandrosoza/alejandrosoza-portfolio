@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { createClient } from "@/lib/supabase";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createPublicSupabaseClient } from "@/lib/supabase-server";
 import { getCloudinaryUrl } from "@/lib/cloudinary-url";
 import { localized } from "@/lib/utils";
 import { FILM_CATEGORIES } from "@/lib/constants";
@@ -13,13 +12,15 @@ import JsonLd from "@/components/ui/JsonLd";
 import { filmSchema } from "@/lib/schema";
 import type { Film, Locale } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 interface FilmDetailPageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
 export async function generateStaticParams() {
   try {
-    const supabase = createClient();
+    const supabase = createPublicSupabaseClient();
     const { data } = await supabase.from("films").select("slug");
     return (data ?? []).map((film) => ({ slug: film.slug as string }));
   } catch {
@@ -31,12 +32,12 @@ export async function generateMetadata({
   params,
 }: FilmDetailPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   const { data: film } = await supabase
     .from("films")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
   if (!film) return {};
 
@@ -53,19 +54,23 @@ export async function generateMetadata({
 export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
   const { locale, slug } = await params;
   const loc = locale as Locale;
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
 
   const { data: film } = await supabase
     .from("films")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
   if (!film) {
     notFound();
   }
 
   const typedFilm = film as Film;
+  const tags = Array.isArray(typedFilm.tags) ? typedFilm.tags : [];
+  const behindTheScenes = Array.isArray(typedFilm.behind_the_scenes)
+    ? typedFilm.behind_the_scenes
+    : [];
 
   const { data: nextFilm } = await supabase
     .from("films")
@@ -88,7 +93,7 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
 
   return (
     <div className="min-h-screen">
-      <JsonLd data={filmSchema(typedFilm)} />
+      <JsonLd id="json-ld-film" data={filmSchema(typedFilm)} />
 
       {/* Section A — Video hero */}
       <YouTubeEmbed youtubeId={typedFilm.youtube_id} title={title} />
@@ -172,9 +177,9 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
 
         {/* Right column */}
         <div className="pt-12 lg:w-[40%]">
-          {typedFilm.tags.length > 0 && (
+          {tags.length > 0 && (
             <div className="mb-8 flex flex-wrap gap-2">
-              {typedFilm.tags.map((tag) => (
+              {tags.map((tag) => (
                 <span
                   key={tag}
                   className="border border-film-gray px-3 py-1 font-body text-type-label uppercase tracking-[0.2em] text-film-cream/40"
@@ -203,7 +208,7 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
       </div>
 
       {/* Section D — Behind the scenes */}
-      {typedFilm.behind_the_scenes.length > 0 && (
+      {behindTheScenes.length > 0 && (
         <section className="bg-film-dark py-20">
           <div className="container-film">
             <div className="flex items-center gap-4">
@@ -217,7 +222,7 @@ export default async function FilmDetailPage({ params }: FilmDetailPageProps) {
             </p>
 
             <div className="mt-10 grid grid-cols-1 gap-0.5 sm:grid-cols-2 lg:grid-cols-3">
-              {typedFilm.behind_the_scenes.map((publicId, index) => (
+              {behindTheScenes.map((publicId, index) => (
                 <div key={publicId + index} className="group relative aspect-[4/3] overflow-hidden">
                   <Image
                     src={getCloudinaryUrl(publicId, { width: 800 })}
