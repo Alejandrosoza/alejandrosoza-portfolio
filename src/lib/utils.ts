@@ -200,6 +200,54 @@ export function getYouTubeThumbnail(
 }
 
 /**
+ * YouTube embed URL. Autoplay is reliable only when the iframe is created
+ * inside the same user-gesture call stack (see mountYouTubeEmbed).
+ */
+export function getYouTubeEmbedUrl(
+  youtubeId: string,
+  options?: { autoplay?: boolean }
+): string {
+  if (!youtubeId) return "";
+  const params = new URLSearchParams({
+    autoplay: options?.autoplay ? "1" : "0",
+    rel: "0",
+    modestbranding: "1",
+    playsinline: "1",
+    color: "white",
+    enablejsapi: "1",
+  });
+  if (typeof window !== "undefined") {
+    params.set("origin", window.location.origin);
+  }
+  return `https://www.youtube.com/embed/${youtubeId}?${params.toString()}`;
+}
+
+/** iframe allow attribute required for unmuted autoplay after a click. */
+export const YOUTUBE_IFRAME_ALLOW =
+  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+
+/**
+ * Create and mount a YouTube iframe synchronously (must run inside a click
+ * handler) so the browser treats playback as a user gesture and autoplays.
+ */
+export function mountYouTubeEmbed(
+  container: HTMLElement,
+  youtubeId: string,
+  title: string
+): HTMLIFrameElement {
+  container.replaceChildren();
+  const iframe = document.createElement("iframe");
+  iframe.src = getYouTubeEmbedUrl(youtubeId, { autoplay: true });
+  iframe.title = title;
+  iframe.allow = YOUTUBE_IFRAME_ALLOW;
+  iframe.allowFullscreen = true;
+  iframe.referrerPolicy = "strict-origin-when-cross-origin";
+  iframe.className = "absolute inset-0 h-full w-full border-0";
+  container.appendChild(iframe);
+  return iframe;
+}
+
+/**
  * Format a film's year and optional month for display.
  */
 export function formatFilmDate(year: number, month?: number): string {
