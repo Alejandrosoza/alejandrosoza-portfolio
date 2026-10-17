@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
+import { mountYouTubeEmbed } from "@/lib/utils";
 
 const PLACEHOLDER_YOUTUBE_ID = "dQw4w9WgXcQ";
 
@@ -13,6 +14,9 @@ interface ShowreelModalProps {
 }
 
 export default function ShowreelModal({ isOpen, onClose, youtubeId }: ShowreelModalProps) {
+  const mountRef = useRef<HTMLDivElement>(null);
+  const videoId = youtubeId || PLACEHOLDER_YOUTUBE_ID;
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -29,7 +33,15 @@ export default function ShowreelModal({ isOpen, onClose, youtubeId }: ShowreelMo
     };
   }, [isOpen, onClose]);
 
-  const videoId = youtubeId || PLACEHOLDER_YOUTUBE_ID;
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const node = mountRef.current;
+    if (!node) return;
+    mountYouTubeEmbed(node, videoId, "Showreel");
+    return () => {
+      node.replaceChildren();
+    };
+  }, [isOpen, videoId]);
 
   return (
     <AnimatePresence>
@@ -38,15 +50,15 @@ export default function ShowreelModal({ isOpen, onClose, youtubeId }: ShowreelMo
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           onClick={onClose}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-6 backdrop-blur-sm"
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
             onClick={(event) => event.stopPropagation()}
             className="relative w-full max-w-[900px]"
           >
@@ -58,14 +70,8 @@ export default function ShowreelModal({ isOpen, onClose, youtubeId }: ShowreelMo
             >
               <X size={28} />
             </button>
-            <div className="aspect-video w-full">
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
-                title="Showreel"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="h-full w-full"
-              />
+            <div className="relative aspect-video w-full overflow-hidden bg-black">
+              <div ref={mountRef} className="absolute inset-0" />
             </div>
           </motion.div>
         </motion.div>

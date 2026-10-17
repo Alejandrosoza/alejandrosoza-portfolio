@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
+import { mountYouTubeEmbed } from "@/lib/utils";
 
 interface VideoModalProps {
   isOpen: boolean;
@@ -12,6 +13,8 @@ interface VideoModalProps {
 }
 
 export default function VideoModal({ isOpen, onClose, youtubeId, title }: VideoModalProps) {
+  const mountRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -28,6 +31,18 @@ export default function VideoModal({ isOpen, onClose, youtubeId, title }: VideoM
     };
   }, [isOpen, onClose]);
 
+  // useLayoutEffect + parent flushSync keeps this inside the click gesture
+  // so unmuted autoplay is allowed.
+  useLayoutEffect(() => {
+    if (!isOpen || !youtubeId) return;
+    const node = mountRef.current;
+    if (!node) return;
+    mountYouTubeEmbed(node, youtubeId, title);
+    return () => {
+      node.replaceChildren();
+    };
+  }, [isOpen, youtubeId, title]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -35,15 +50,15 @@ export default function VideoModal({ isOpen, onClose, youtubeId, title }: VideoM
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           onClick={onClose}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-6 backdrop-blur-sm"
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
             onClick={(event) => event.stopPropagation()}
             className="relative w-full max-w-[900px]"
           >
@@ -55,14 +70,8 @@ export default function VideoModal({ isOpen, onClose, youtubeId, title }: VideoM
             >
               <X size={28} />
             </button>
-            <div className="aspect-video w-full">
-              <iframe
-                src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`}
-                title={title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="h-full w-full"
-              />
+            <div className="relative aspect-video w-full overflow-hidden bg-black">
+              <div ref={mountRef} className="absolute inset-0" />
             </div>
             <p className="mt-4 text-center font-heading text-lg text-film-cream/70">{title}</p>
           </motion.div>

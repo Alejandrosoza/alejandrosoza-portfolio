@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { flushSync } from "react-dom";
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -33,7 +34,16 @@ export default function VideosGrid({ videos, locale }: VideosGridProps) {
       <div className="container-film py-12">
         <div className="grid grid-cols-1 gap-px bg-film-gray sm:grid-cols-2 lg:grid-cols-3">
           {videos.map((video, index) => (
-            <VideoCard key={video.id} video={video} locale={locale} index={index} onPlay={() => setActive(video)} />
+            <VideoCard
+              key={video.id}
+              video={video}
+              locale={locale}
+              index={index}
+              onPlay={() => {
+                // Flush so the modal iframe mounts inside this click gesture (autoplay).
+                flushSync(() => setActive(video));
+              }}
+            />
           ))}
         </div>
       </div>

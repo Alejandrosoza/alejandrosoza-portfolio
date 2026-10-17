@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
-import { getYouTubeThumbnail } from "@/lib/utils";
+import { getYouTubeThumbnail, mountYouTubeEmbed } from "@/lib/utils";
 
 interface YouTubeEmbedProps {
   youtubeId: string;
@@ -11,7 +11,15 @@ interface YouTubeEmbedProps {
 }
 
 export default function YouTubeEmbed({ youtubeId, title }: YouTubeEmbedProps) {
+  const mountRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
+
+  const handlePlay = () => {
+    if (!youtubeId || !mountRef.current || playing) return;
+    // Mount the iframe inside the click handler so autoplay is allowed.
+    mountYouTubeEmbed(mountRef.current, youtubeId, title);
+    setPlaying(true);
+  };
 
   return (
     <motion.div
@@ -20,20 +28,14 @@ export default function YouTubeEmbed({ youtubeId, title }: YouTubeEmbedProps) {
       transition={{ duration: 0.8 }}
       className="relative aspect-video w-full bg-film-dark"
     >
-      {playing ? (
-        <iframe
-          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&color=white`}
-          title={title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="h-full w-full border-0"
-        />
-      ) : (
+      <div ref={mountRef} className="absolute inset-0" />
+
+      {!playing && (
         <button
           type="button"
-          onClick={() => setPlaying(true)}
+          onClick={handlePlay}
           aria-label={`Play ${title}`}
-          className="group relative block h-full w-full"
+          className="group absolute inset-0 z-10 block h-full w-full"
         >
           <div
             className="absolute inset-0 bg-cover bg-center"
