@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import VideosGrid from "@/components/sections/VideosGrid";
+import YouTubeApiPreload from "@/components/ui/YouTubeApiPreload";
 import type { Locale, Video } from "@/lib/types";
 
 const descriptions: Record<Locale, string> = {
@@ -40,6 +41,7 @@ export default async function VideosPage({
 
   return (
     <div className="min-h-screen">
+      <YouTubeApiPreload />
       <div className="container-film pb-16 pt-40">
         <p className="font-body text-type-label uppercase tracking-[0.5em] text-film-cream/30">
           Work

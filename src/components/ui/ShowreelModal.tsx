@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { mountYouTubeEmbed } from "@/lib/utils";
+import YouTubePlayer from "@/components/ui/YouTubePlayer";
 
 const PLACEHOLDER_YOUTUBE_ID = "dQw4w9WgXcQ";
 
@@ -14,7 +14,6 @@ interface ShowreelModalProps {
 }
 
 export default function ShowreelModal({ isOpen, onClose, youtubeId }: ShowreelModalProps) {
-  const mountRef = useRef<HTMLDivElement>(null);
   const videoId = youtubeId || PLACEHOLDER_YOUTUBE_ID;
 
   useEffect(() => {
@@ -32,16 +31,6 @@ export default function ShowreelModal({ isOpen, onClose, youtubeId }: ShowreelMo
       document.body.style.overflow = "";
     };
   }, [isOpen, onClose]);
-
-  useLayoutEffect(() => {
-    if (!isOpen) return;
-    const node = mountRef.current;
-    if (!node) return;
-    mountYouTubeEmbed(node, videoId, "Showreel");
-    return () => {
-      node.replaceChildren();
-    };
-  }, [isOpen, videoId]);
 
   return (
     <AnimatePresence>
@@ -70,9 +59,7 @@ export default function ShowreelModal({ isOpen, onClose, youtubeId }: ShowreelMo
             >
               <X size={28} />
             </button>
-            <div className="relative aspect-video w-full overflow-hidden bg-black">
-              <div ref={mountRef} className="absolute inset-0" />
-            </div>
+            <YouTubePlayer youtubeId={videoId} title="Showreel" />
           </motion.div>
         </motion.div>
       )}
