@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { mountYouTubeEmbed } from "@/lib/utils";
+import YouTubePlayer from "@/components/ui/YouTubePlayer";
 
 interface VideoModalProps {
   isOpen: boolean;
@@ -13,8 +13,6 @@ interface VideoModalProps {
 }
 
 export default function VideoModal({ isOpen, onClose, youtubeId, title }: VideoModalProps) {
-  const mountRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (!isOpen) return;
 
@@ -31,21 +29,9 @@ export default function VideoModal({ isOpen, onClose, youtubeId, title }: VideoM
     };
   }, [isOpen, onClose]);
 
-  // useLayoutEffect + parent flushSync keeps this inside the click gesture
-  // so unmuted autoplay is allowed.
-  useLayoutEffect(() => {
-    if (!isOpen || !youtubeId) return;
-    const node = mountRef.current;
-    if (!node) return;
-    mountYouTubeEmbed(node, youtubeId, title);
-    return () => {
-      node.replaceChildren();
-    };
-  }, [isOpen, youtubeId, title]);
-
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isOpen && youtubeId && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -70,9 +56,12 @@ export default function VideoModal({ isOpen, onClose, youtubeId, title }: VideoM
             >
               <X size={28} />
             </button>
-            <div className="relative aspect-video w-full overflow-hidden bg-black">
-              <div ref={mountRef} className="absolute inset-0" />
-            </div>
+            {/*
+              Keep the warm API player under the facade. The poster click that
+              opened this modal is a separate gesture; one tap on the facade
+              calls playVideo() and should start audio on mobile.
+            */}
+            <YouTubePlayer youtubeId={youtubeId} title={title} />
             <p className="mt-4 text-center font-heading text-lg text-film-cream/70">{title}</p>
           </motion.div>
         </motion.div>

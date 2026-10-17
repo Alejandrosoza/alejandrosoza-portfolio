@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { flushSync } from "react-dom";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowDown, Play } from "lucide-react";
@@ -102,9 +101,7 @@ export default function HeroSection({ showreelId, locale }: HeroSectionProps) {
 
           <button
             type="button"
-            onClick={() => {
-              flushSync(() => setShowreelOpen(true));
-            }}
+            onClick={() => setShowreelOpen(true)}
             className="flex items-center gap-2 font-body text-type-ui uppercase tracking-[0.2em] text-film-cream/40 transition-colors duration-[400ms] hover:text-film-cream/70"
           >
             <Play size={12} fill="currentColor" />
