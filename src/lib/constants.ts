@@ -5,6 +5,10 @@ export const SITE_URL =
 
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
 
+/** Public contact address and contact-form inbox (via Resend). */
+export const CONTACT_EMAIL =
+  process.env.CONTACT_EMAIL || "Alejandrosoza.film@gmail.com";
+
 export const LOCALES = ["en", "es", "fr"] as const;
 
 export const DEFAULT_LOCALE = "en" as const;
