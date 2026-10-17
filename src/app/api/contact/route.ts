@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { CONTACT_EMAIL } from "@/lib/constants";
 
 interface ContactBody {
   name: string;
@@ -42,7 +43,8 @@ export async function POST(request: Request) {
 
     await resend.emails.send({
       from: "Portfolio Contact <noreply@alejandrosoza.ca>",
-      to: [process.env.ADMIN_EMAIL || "soza.ale@gmail.com"],
+      to: [CONTACT_EMAIL],
+      replyTo: email,
       subject: `[alejandrosoza.ca] ${subject} — from ${name}`,
       html: `
         <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f0ece4;">

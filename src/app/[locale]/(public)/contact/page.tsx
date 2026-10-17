@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ExternalLink } from "lucide-react";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
 import ContactForm from "@/components/sections/ContactForm";
+import { CONTACT_EMAIL } from "@/lib/constants";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 import type { SiteConfig } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -16,7 +17,12 @@ export default async function ContactPage() {
   const { data: config } = await supabase.from("site_config").select("*").single();
   const siteConfig = config as SiteConfig | null;
 
-  const email = siteConfig?.contact_email || "hello@alejandrosoza.ca";
+  const storedEmail = siteConfig?.contact_email?.trim();
+  // Migrate away from the old placeholder still stored in some site_config rows.
+  const email =
+    !storedEmail || storedEmail === "hello@alejandrosoza.ca"
+      ? CONTACT_EMAIL
+      : storedEmail;
 
   const socials = [
     { label: "Instagram", url: siteConfig?.instagram_url },

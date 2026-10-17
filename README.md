@@ -120,6 +120,7 @@ messages/
 | `SUPABASE_SERVICE_ROLE_KEY`       | Supabase service role key (server-only, bypasses RLS)    |
 | `NEXT_PUBLIC_SITE_URL`            | Canonical site URL, used for metadata/SEO                |
 | `ADMIN_EMAIL`                     | Email address granted access to `/admin`                 |
+| `CONTACT_EMAIL`                   | Inbox for contact form submissions (default: Alejandrosoza.film@gmail.com) |
 | `RESEND_API_KEY`                  | API key for sending contact form notification emails     |
 
 ## Trilingual Content Model
