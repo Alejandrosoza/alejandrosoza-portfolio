@@ -1,15 +1,12 @@
-"use client";
-
-import Script from "next/script";
-
 interface JsonLdProps {
   id?: string;
   data: Record<string, unknown>;
 }
 
+/** Server-safe JSON-LD (no next/script client runtime). */
 export default function JsonLd({ id = "json-ld", data }: JsonLdProps) {
   return (
-    <Script
+    <script
       id={id}
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}

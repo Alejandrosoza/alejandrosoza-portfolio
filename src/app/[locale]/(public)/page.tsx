@@ -3,7 +3,6 @@ import { createServerSupabaseClient } from "@/lib/supabase-server";
 import HeroSection from "@/components/sections/HeroSection";
 import StatementSection from "@/components/sections/StatementSection";
 import FeaturedFilms from "@/components/sections/FeaturedFilms";
-import YouTubeApiPreload from "@/components/ui/YouTubeApiPreload";
 import type { Film, Locale } from "@/lib/types";
 
 const descriptions: Record<Locale, string> = {
@@ -48,7 +47,6 @@ export default async function HomePage({
 
   return (
     <>
-      <YouTubeApiPreload />
       <HeroSection showreelId={config?.showreel_youtube_id || ""} locale={locale} />
       <StatementSection />
       <FeaturedFilms films={(films as Film[]) ?? []} locale={locale as Locale} />
